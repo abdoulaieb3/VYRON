@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex, nofollow" />
+<title>VYRON · Admin produits</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@900&family=Inter:wght@400;500;600;700&family=Noto+Kufi+Arabic:wght@400;600&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --black:#080808; --charcoal:#111; --charcoal-2:#181818; --charcoal-3:#232323;
+  --line:#2e2e2e; --line-soft:#1f1f1f;
+  --off-white:#e8e4dd; --dim:#a5a19a; --muted:#726f69;
+  --blood:#7c1420; --blood-bright:#9b1b28;
+  --ok:#4a8f6b; --warn:#c9a13b;
+  --ease:cubic-bezier(.22,1,.36,1);
+}
+*,*::before,*::after{ box-sizing:border-box; margin:0; padding:0; }
+body{ background:var(--black); color:var(--off-white); font-family:"Inter","Noto Kufi Arabic",system-ui,sans-serif; font-size:14px; line-height:1.55; -webkit-font-smoothing:antialiased; }
+::-webkit-scrollbar{ width:10px; height:10px; }
+::-webkit-scrollbar-track{ background:var(--black); }
+::-webkit-scrollbar-thumb{ background:var(--charcoal-3); border:2px solid var(--black); }
+a{ color:inherit; }
+button{ font:inherit; color:inherit; cursor:pointer; background:none; border:none; }
+input,select,textarea{ font:inherit; }
+img{ display:block; max-width:100%; }
+
+/* ---- boutons ---- */
+.btn{ display:inline-flex; align-items:center; gap:8px; padding:10px 16px; border:1px solid var(--line); background:var(--charcoal-2); color:var(--off-white); font-size:12px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; transition:border-color .2s, background .2s; white-space:nowrap; }
+.btn:hover{ border-color:var(--blood-bright); }
+.btn--solid{ background:var(--off-white); color:var(--black); border-color:var(--off-white); }
+.btn--solid:hover{ background:var(--blood); border-color:var(--blood); color:#fff; }
+.btn--blood{ background:var(--blood); border-color:var(--blood); color:#fff; }
+.btn--blood:hover{ background:var(--blood-bright); border-color:var(--blood-bright); }
+.btn--sm{ padding:7px 11px; font-size:10.5px; letter-spacing:.05em; }
+.btn--ghost{ background:transparent; }
+.btn:disabled{ opacity:.4; cursor:not-allowed; }
+
+/* ---- header ---- */
+.topbar{ position:sticky; top:0; z-index:20; display:flex; align-items:center; gap:16px; flex-wrap:wrap; padding:16px clamp(16px,4vw,40px); background:rgba(8,8,8,.96); border-bottom:1px solid var(--line-soft); }
+.brand{ font-family:"Cinzel Decorative",serif; font-weight:900; letter-spacing:.22em; font-size:1.1rem; padding-right:.22em; }
+.brand span{ font-family:"Inter",sans-serif; font-weight:600; font-size:.62rem; letter-spacing:.24em; color:var(--muted); display:block; margin-top:2px; }
+.topbar .spacer{ flex:1; }
+.count-chip{ font-size:11px; letter-spacing:.08em; color:var(--dim); border:1px solid var(--line); padding:6px 10px; }
+.dirty-chip{ font-size:10.5px; letter-spacing:.06em; color:var(--warn); border:1px solid var(--warn); padding:6px 10px; display:none; }
+.dirty-chip.show{ display:inline-block; }
+
+.wrap{ max-width:1180px; margin:0 auto; padding:clamp(18px,3vw,32px) clamp(16px,4vw,40px) 120px; }
+
+/* ---- callout ---- */
+.help{ border:1px solid var(--line-soft); background:var(--charcoal); padding:16px 18px; margin-bottom:26px; font-size:12.5px; color:var(--dim); line-height:1.7; }
+.help b{ color:var(--off-white); }
+.help ol{ margin:8px 0 0 18px; }
+.help code{ background:var(--charcoal-3); padding:1px 6px; font-size:12px; color:var(--off-white); }
+
+/* ---- featured strip ---- */
+.feat-panel{ border:1px solid var(--line-soft); padding:14px 16px; margin-bottom:24px; }
+.feat-panel h2{ font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--dim); margin-bottom:12px; }
+.feat-chips{ display:flex; flex-wrap:wrap; gap:8px; }
+.feat-chip{ display:flex; align-items:center; gap:8px; border:1px solid var(--blood); background:rgba(124,20,32,.1); padding:6px 8px 6px 12px; font-size:11.5px; letter-spacing:.04em; }
+.feat-chip .ord{ display:flex; }
+.feat-chip .ord button{ padding:2px 5px; color:var(--dim); font-size:12px; }
+.feat-chip .ord button:hover{ color:var(--off-white); }
+.feat-chip .rm{ color:var(--muted); padding:2px 4px; }
+.feat-chip .rm:hover{ color:var(--blood-bright); }
+.feat-empty{ font-size:12px; color:var(--muted); }
+
+/* ---- toolbar ---- */
+.list-tools{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:14px; }
+.list-tools input[type=search]{ flex:1; min-width:180px; max-width:320px; padding:9px 12px; background:var(--charcoal); border:1px solid var(--line); color:var(--off-white); }
+.list-tools select{ padding:9px 12px; background:var(--charcoal); border:1px solid var(--line); color:var(--off-white); text-transform:uppercase; font-size:12px; letter-spacing:.05em; }
+input:focus,select:focus,textarea:focus{ outline:none; border-color:var(--blood-bright); }
+
+/* ---- product list ---- */
+.plist{ display:flex; flex-direction:column; border:1px solid var(--line-soft); }
+.prow{ display:grid; grid-template-columns:52px 1fr auto; gap:14px; align-items:center; padding:12px 14px; border-bottom:1px solid var(--line-soft); }
+.prow:last-child{ border-bottom:none; }
+.prow:hover{ background:var(--charcoal); }
+.prow__thumb{ width:52px; height:64px; background:var(--charcoal-3); border:1px solid var(--line-soft); position:relative; overflow:hidden; display:flex; align-items:center; justify-content:center; }
+.prow__thumb::after{ content:"?"; font-size:11px; color:var(--muted); }
+.prow__thumb img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; background:var(--charcoal-3); }
+.prow__main{ min-width:0; }
+.prow__name{ font-weight:600; font-size:13.5px; letter-spacing:.02em; }
+.prow__name .ar{ color:var(--dim); font-weight:400; margin-left:8px; font-size:12px; }
+.prow__meta{ font-size:11.5px; color:var(--muted); letter-spacing:.03em; margin-top:3px; display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+.tagpill{ font-size:9px; letter-spacing:.14em; text-transform:uppercase; font-weight:700; padding:2px 6px; border:1px solid var(--line); }
+.tagpill--new{ color:var(--off-white); }
+.tagpill--lim{ color:var(--blood-bright); border-color:var(--blood); }
+.tagpill--feat{ color:var(--warn); border-color:var(--warn); }
+.prow__actions{ display:flex; align-items:center; gap:6px; }
+
+/* stock toggle */
+.stock{ display:inline-flex; align-items:center; gap:7px; font-size:10.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); user-select:none; }
+.switch{ width:38px; height:20px; border:1px solid var(--line); background:var(--charcoal-3); position:relative; transition:background .2s, border-color .2s; flex-shrink:0; }
+.switch::after{ content:""; position:absolute; top:1px; left:1px; width:16px; height:16px; background:var(--muted); transition:transform .2s, background .2s; }
+.switch.on{ border-color:var(--ok); background:rgba(74,143,107,.18); }
+.switch.on::after{ transform:translateX(18px); background:var(--ok); }
+
+.reorder{ display:flex; flex-direction:column; }
+.reorder button{ padding:1px 6px; color:var(--muted); font-size:11px; line-height:1.1; }
+.reorder button:hover{ color:var(--off-white); }
+.icon-btn{ width:30px; height:30px; display:inline-flex; align-items:center; justify-content:center; border:1px solid var(--line); font-size:13px; }
+.icon-btn:hover{ border-color:var(--blood-bright); }
+.icon-btn.danger:hover{ border-color:var(--blood-bright); color:var(--blood-bright); }
+
+.empty-list{ padding:50px 20px; text-align:center; color:var(--muted); letter-spacing:.05em; }
+
+/* ---- editor modal ---- */
+.modal{ position:fixed; inset:0; z-index:40; background:rgba(0,0,0,.72); display:none; align-items:flex-start; justify-content:center; padding:clamp(10px,3vw,40px); overflow-y:auto; }
+.modal.show{ display:flex; }
+.sheet{ background:var(--charcoal); border:1px solid var(--line); width:100%; max-width:760px; }
+.sheet__head{ position:sticky; top:0; z-index:2; display:flex; align-items:center; justify-content:space-between; padding:16px 20px; background:var(--charcoal); border-bottom:1px solid var(--line-soft); }
+.sheet__head h2{ font-size:13px; letter-spacing:.12em; text-transform:uppercase; }
+.sheet__body{ padding:20px; }
+.sheet__foot{ position:sticky; bottom:0; display:flex; gap:10px; justify-content:flex-end; padding:14px 20px; background:var(--charcoal); border-top:1px solid var(--line); }
+
+fieldset{ border:none; margin-bottom:22px; }
+legend{ font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--blood-bright); font-weight:700; margin-bottom:12px; width:100%; padding-bottom:8px; border-bottom:1px solid var(--line-soft); }
+.grid2{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+.f{ margin-bottom:12px; }
+.f > label{ display:block; font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--dim); font-weight:600; margin-bottom:6px; }
+.f > label .req{ color:var(--blood-bright); }
+.f input[type=text],.f input[type=number],.f select,.f textarea{ width:100%; padding:10px 12px; background:var(--charcoal-2); border:1px solid var(--line); color:var(--off-white); }
+.f textarea{ min-height:64px; resize:vertical; }
+.f .hint{ font-size:11px; color:var(--muted); margin-top:5px; line-height:1.5; }
+.f.rtl input,.f.rtl textarea{ direction:rtl; text-align:right; font-family:"Noto Kufi Arabic","Inter",sans-serif; }
+.f.err input,.f.err select,.f.err textarea{ border-color:var(--blood); }
+.f .errmsg{ display:none; color:var(--blood-bright); font-size:11px; margin-top:5px; }
+.f.err .errmsg{ display:block; }
+
+.chips{ display:flex; flex-wrap:wrap; gap:8px; }
+.chip{ padding:8px 14px; border:1px solid var(--line); color:var(--dim); font-size:12px; font-weight:600; letter-spacing:.04em; }
+.chip.on{ background:var(--off-white); color:var(--black); border-color:var(--off-white); }
+
+.toggles{ display:flex; flex-wrap:wrap; gap:18px; }
+.tg{ display:inline-flex; align-items:center; gap:9px; font-size:12px; letter-spacing:.03em; user-select:none; }
+
+/* image rows */
+.imgrow{ display:grid; grid-template-columns:64px 1fr auto; gap:12px; align-items:center; margin-bottom:10px; }
+.imgrow__prev{ width:64px; height:80px; background:var(--charcoal-3); border:1px solid var(--line-soft); position:relative; overflow:hidden; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.imgrow__prev::after{ content:attr(data-ph); font-size:8.5px; color:var(--blood-bright); text-align:center; letter-spacing:.04em; padding:3px; }
+.imgrow__prev img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; background:var(--charcoal-3); }
+.imgrow input{ width:100%; padding:9px 11px; background:var(--charcoal-2); border:1px solid var(--line); color:var(--off-white); }
+.imgrow__ctrl{ display:flex; gap:4px; }
+
+/* live preview card */
+.preview{ border:1px solid var(--line-soft); padding:16px; margin-top:6px; }
+.preview h3{ font-size:10px; letter-spacing:.16em; text-transform:uppercase; color:var(--muted); margin-bottom:12px; }
+.pcard{ width:220px; border:1px solid var(--line-soft); background:var(--charcoal-2); }
+.pcard__media{ aspect-ratio:4/5; overflow:hidden; background:var(--charcoal-3); position:relative; }
+.pcard__media img{ width:100%; height:100%; object-fit:cover; filter:grayscale(.25) brightness(.85); }
+.pcard__badges{ position:absolute; top:10px; left:10px; display:flex; flex-direction:column; gap:5px; }
+.pcard__b{ font-size:8px; letter-spacing:.16em; text-transform:uppercase; font-weight:700; padding:4px 7px; background:var(--black); border:1px solid var(--line); }
+.pcard__b.lim{ color:var(--blood-bright); border-color:var(--blood); }
+.pcard__body{ padding:14px; }
+.pcard__cat{ font-size:9px; letter-spacing:.2em; text-transform:uppercase; color:var(--blood-bright); font-weight:600; }
+.pcard__name{ font-size:13px; letter-spacing:.04em; text-transform:uppercase; margin:6px 0; }
+.pcard__price{ font-size:12.5px; color:var(--dim); }
+
+/* toast */
+.toast{ position:fixed; left:50%; bottom:26px; transform:translate(-50%,140%); z-index:60; background:var(--off-white); color:var(--black); padding:12px 22px; font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; transition:transform .4s var(--ease); }
+.toast.show{ transform:translate(-50%,0); }
+.toast.bad{ background:var(--blood-bright); color:#fff; }
+
+/* validation modal */
+.vmodal{ position:fixed; inset:0; z-index:50; background:rgba(0,0,0,.75); display:none; align-items:center; justify-content:center; padding:20px; }
+.vmodal.show{ display:flex; }
+.vbox{ background:var(--charcoal); border:1px solid var(--blood); max-width:460px; width:100%; padding:24px; }
+.vbox h3{ font-size:13px; letter-spacing:.1em; text-transform:uppercase; color:var(--blood-bright); margin-bottom:14px; }
+.vbox ul{ margin:0 0 18px 18px; font-size:12.5px; color:var(--dim); line-height:1.8; }
+
+.menu-wrap{ position:relative; }
+.menu{ position:absolute; right:0; top:calc(100% + 6px); background:var(--charcoal); border:1px solid var(--line); min-width:230px; display:none; z-index:30; }
+.menu.show{ display:block; }
+.menu button{ display:block; width:100%; text-align:left; padding:11px 14px; font-size:12px; letter-spacing:.03em; border-bottom:1px solid var(--line-soft); }
+.menu button:last-child{ border-bottom:none; }
+.menu button:hover{ background:var(--charcoal-2); }
+.menu button.danger{ color:var(--blood-bright); }
+
+@media (max-width:640px){
+  .prow{ grid-template-columns:44px 1fr; }
+  .prow__actions{ grid-column:1/-1; justify-content:space-between; flex-wrap:wrap; }
+  .grid2{ grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">VYRON<span>Admin produits</span></div>
+  <span class="count-chip" id="count">0 produits</span>
+  <span class="dirty-chip" id="dirty">Brouillon non téléchargé</span>
+  <div class="spacer"></div>
+  <button class="btn btn--sm" id="btnNew">＋ Nouveau produit</button>
+  <button class="btn btn--solid btn--sm" id="btnDownload">⬇ Télécharger products-data.js</button>
+  <div class="menu-wrap">
+    <button class="btn btn--ghost btn--sm" id="btnMenu">⋯</button>
+    <div class="menu" id="menu">
+      <button id="mImport">Importer un fichier products-data.js…</button>
+      <button id="mReloadFile">Repartir du fichier chargé</button>
+      <button id="mClear" class="danger">Vider le brouillon local</button>
+    </div>
+  </div>
+  <input type="file" id="fileInput" accept=".js,text/javascript" hidden />
+</div>
+
+<div class="wrap">
+
+  <div class="help">
+    <b>Ajouter un produit, en 5 étapes :</b>
+    <ol>
+      <li>Mets la ou les photos dans le dossier <code>assets/products/</code> (idéal : 1000×1250 px).</li>
+      <li>Clique <b>＋ Nouveau produit</b>, remplis les champs (nom, prix, tailles, photos, descriptions FR + AR).</li>
+      <li>Pour la photo, écris juste le nom du fichier (ex&nbsp;: <code>mon-tee-1.jpg</code>) — ou colle une URL complète.</li>
+      <li>Clique <b>⬇ Télécharger products-data.js</b>, puis remplace le fichier <code>products-data.js</code> à la racine du site.</li>
+      <li>Ré-uploade le dossier chez ton hébergeur (Netlify : glisser-déposer). C'est en ligne.</li>
+    </ol>
+    Tes modifications sont gardées automatiquement dans ce navigateur (brouillon local) tant que tu n'as pas téléchargé.
+    Le stock se change directement dans la liste ci-dessous avec l'interrupteur <b>En stock</b>.
+  </div>
+
+  <div class="feat-panel">
+    <h2>Pièces phares · section « Collection » de la page d'accueil (ordre respecté)</h2>
+    <div class="feat-chips" id="featChips"></div>
+  </div>
+
+  <div class="list-tools">
+    <input type="search" id="search" placeholder="Rechercher un produit…" />
+    <select id="catFilter">
+      <option value="">Toutes catégories</option>
+      <option value="tshirts">T-Shirts</option>
+      <option value="shorts">Shorts</option>
+      <option value="joggers">Joggers</option>
+      <option value="jackets">Vestes</option>
+      <option value="caps">Casquettes</option>
+    </select>
+  </div>
+
+  <div class="plist" id="plist"></div>
+</div>
+
+<!-- ÉDITEUR -->
+<div class="modal" id="editor">
+  <div class="sheet">
+    <div class="sheet__head">
+      <h2 id="editorTitle">Nouveau produit</h2>
+      <button class="icon-btn" id="editorClose" aria-label="Fermer">✕</button>
+    </div>
+    <div class="sheet__body">
+
+      <fieldset>
+        <legend>Identité</legend>
+        <div class="grid2">
+          <div class="f" data-f="name-fr">
+            <label>Nom (français) <span class="req">*</span></label>
+            <input type="text" id="in-name-fr" />
+            <div class="errmsg">Obligatoire.</div>
+          </div>
+          <div class="f rtl" data-f="name-ar">
+            <label>الاسم (بالعربية) <span class="req">*</span></label>
+            <input type="text" id="in-name-ar" dir="rtl" />
+            <div class="errmsg">مطلوب.</div>
+          </div>
+        </div>
+        <div class="f" data-f="id">
+          <label>Identifiant (slug) <span class="req">*</span></label>
+          <input type="text" id="in-id" />
+          <div class="hint">Généré depuis le nom. Lettres minuscules, chiffres et tirets. Doit être unique. Ne le change plus une fois le produit en ligne.</div>
+          <div class="errmsg">Identifiant vide ou déjà utilisé.</div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Prix &amp; catégorie</legend>
+        <div class="grid2">
+          <div class="f" data-f="price">
+            <label>Prix (DA) <span class="req">*</span></label>
+            <input type="number" id="in-price" min="0" step="50" />
+            <div class="errmsg">Prix invalide.</div>
+          </div>
+          <div class="f" data-f="category">
+            <label>Catégorie <span class="req">*</span></label>
+            <select id="in-category">
+              <option value="tshirts">T-Shirts</option>
+              <option value="shorts">Shorts</option>
+              <option value="joggers">Joggers</option>
+              <option value="jackets">Vestes</option>
+              <option value="caps">Casquettes</option>
+            </select>
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Tailles disponibles <span class="req" style="color:var(--blood-bright)">*</span></legend>
+        <div class="chips" id="sizeChips"></div>
+        <div class="f" style="margin-top:12px;max-width:260px">
+          <label>Ajouter une taille sur mesure</label>
+          <input type="text" id="in-size-custom" placeholder="ex : XXXL, 42, Taille unique" />
+          <div class="hint">Entrée pour ajouter.</div>
+        </div>
+        <div class="errmsg" id="size-err" style="display:none;color:var(--blood-bright);font-size:11px;margin-top:6px">Choisis au moins une taille.</div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Statut</legend>
+        <div class="toggles">
+          <label class="tg"><span class="switch" data-sw="inStock"></span> En stock</label>
+          <label class="tg"><span class="switch" data-sw="isNew"></span> Badge « New »</label>
+          <label class="tg"><span class="switch" data-sw="isLimited"></span> Badge « Limited »</label>
+          <label class="tg"><span class="switch" data-sw="featured"></span> Pièce phare</label>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Photos <span class="req" style="color:var(--blood-bright)">*</span></legend>
+        <div id="imgRows"></div>
+        <button class="btn btn--sm btn--ghost" id="btnAddImg" type="button">＋ Ajouter une photo</button>
+        <div class="hint" style="margin-top:8px">
+          1<sup>re</sup> photo = image principale. Écris le nom du fichier présent dans <code style="background:var(--charcoal-3);padding:1px 5px">assets/products/</code>
+          (ex : <code style="background:var(--charcoal-3);padding:1px 5px">shadow-1.jpg</code>) ou colle une URL <code style="background:var(--charcoal-3);padding:1px 5px">https://…</code>
+        </div>
+        <div class="errmsg" id="img-err" style="display:none;color:var(--blood-bright);font-size:11px;margin-top:6px">Ajoute au moins une photo.</div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Descriptions</legend>
+        <div class="grid2">
+          <div class="f" data-f="desc-fr">
+            <label>Description (français) <span class="req">*</span></label>
+            <textarea id="in-desc-fr"></textarea>
+            <div class="errmsg">Obligatoire.</div>
+          </div>
+          <div class="f rtl" data-f="desc-ar">
+            <label>الوصف (بالعربية) <span class="req">*</span></label>
+            <textarea id="in-desc-ar" dir="rtl"></textarea>
+            <div class="errmsg">مطلوب.</div>
+          </div>
+        </div>
+        <div class="grid2">
+          <div class="f">
+            <label>Matière &amp; entretien (FR)</label>
+            <textarea id="in-mat-fr"></textarea>
+          </div>
+          <div class="f rtl">
+            <label>الخامة والعناية (AR)</label>
+            <textarea id="in-mat-ar" dir="rtl"></textarea>
+          </div>
+        </div>
+        <div class="grid2">
+          <div class="f">
+            <label>Note guide des tailles (FR)</label>
+            <textarea id="in-sg-fr"></textarea>
+          </div>
+          <div class="f rtl">
+            <label>ملاحظة دليل المقاسات (AR)</label>
+            <textarea id="in-sg-ar" dir="rtl"></textarea>
+          </div>
+        </div>
+      </fieldset>
+
+      <div class="preview">
+        <h3>Aperçu sur la boutique</h3>
+        <div class="pcard" id="pcard">
+          <div class="pcard__media">
+            <div class="pcard__badges" id="pcardBadges"></div>
+            <img id="pcardImg" alt="" />
+          </div>
+          <div class="pcard__body">
+            <div class="pcard__cat" id="pcardCat">—</div>
+            <div class="pcard__name" id="pcardName">—</div>
+            <div class="pcard__price" id="pcardPrice">—</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="sheet__foot">
+      <button class="btn btn--ghost" id="editorCancel">Annuler</button>
+      <button class="btn btn--solid" id="editorSave">Enregistrer le produit</button>
+    </div>
+  </div>
+</div>
+
+<!-- VALIDATION -->
+<div class="vmodal" id="vmodal">
+  <div class="vbox">
+    <h3>Impossible de télécharger — corrige d'abord :</h3>
+    <ul id="vlist"></ul>
+    <div style="text-align:right"><button class="btn btn--sm" id="vclose">Compris</button></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- Catalogue en cours (sert de point de départ) -->
+<script src="products-data.js"></script>
+<script>
+(function(){
+"use strict";
+
+/* ============ CONSTANTES ============ */
+var LS_KEY = "vyron_admin_v2";
+var CAT_LABELS = { tshirts:"T-Shirts", shorts:"Shorts", joggers:"Joggers", jackets:"Vestes", caps:"Casquettes" };
+var SIZE_PRESET = ["S","M","L","XL","XXL","Unique"];
+var IMG_DIR = "assets/products/";
+
+/* ============ ÉTAT ============ */
+var products = [];
+var featured = [];
+var dirty = false;
+var editIndex = -1;        // -1 = nouveau
+var draft = null;          // produit en cours d'édition
+
+var $ = function(s, c){ return (c||document).querySelector(s); };
+var $$ = function(s, c){ return Array.prototype.slice.call((c||document).querySelectorAll(s)); };
+
+/* ============ HELPERS ============ */
+function clone(o){ return JSON.parse(JSON.stringify(o)); }
+
+function slugify(s){
+  return (s||"").toString().toLowerCase()
+    .normalize("NFD").replace(/[̀-ͯ]/g,"")
+    .replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").replace(/-{2,}/g,"-");
+}
+
+function money(n){ return new Intl.NumberFormat("fr-DZ").format(n||0) + " DA"; }
+
+/* Résout une valeur d'image (nom de fichier -> chemin assets/, sinon tel quel) */
+function resolveImg(v){
+  v = (v||"").trim();
+  if (!v) return "";
+  if (/^(https?:)?\/\//i.test(v) || /^data:/i.test(v) || v.charAt(0) === "/") return v;
+  if (v.indexOf("assets/") === 0) return v;
+  return IMG_DIR + v;
+}
+/* Forme courte pour l'affichage dans le champ (retire assets/products/) */
+function shortImg(v){
+  v = (v||"").trim();
+  return v.indexOf(IMG_DIR) === 0 ? v.slice(IMG_DIR.length) : v;
+}
+
+function toast(msg, bad){
+  var t = $("#toast");
+  t.textContent = msg;
+  t.className = "toast show" + (bad ? " bad" : "");
+  clearTimeout(t._t);
+  t._t = setTimeout(function(){ t.className = "toast"; }, 2600);
+}
+
+function markDirty(){
+  dirty = true;
+  $("#dirty").classList.add("show");
+}
+
+function save(){
+  try{ localStorage.setItem(LS_KEY, JSON.stringify({ products: products, featured: featured })); }catch(e){}
+}
+
+/* ============ CHARGEMENT ============ */
+function seedFromFile(){
+  var p = Array.isArray(window.VYRON_PRODUCTS) ? clone(window.VYRON_PRODUCTS) : [];
+  var f = Array.isArray(window.VYRON_FEATURED) ? clone(window.VYRON_FEATURED) : [];
+  return { products: p, featured: f };
+}
+
+function load(){
+  var stored = null;
+  try{ stored = JSON.parse(localStorage.getItem(LS_KEY)); }catch(e){}
+  if (stored && Array.isArray(stored.products)){
+    products = stored.products;
+    featured = Array.isArray(stored.featured) ? stored.featured : [];
+    // brouillon local présent = signale-le, sans armer l'alerte de fermeture
+    $("#dirty").classList.add("show");
+  } else {
+    var seed = seedFromFile();
+    products = seed.products;
+    featured = seed.featured;
+  }
+  cleanFeatured();
+}
+
+function cleanFeatured(){
+  var ids = products.map(function(p){ return p.id; });
+  featured = featured.filter(function(id){ return ids.indexOf(id) !== -1; });
+}
+
+/* ============ RENDU LISTE ============ */
+function render(){
+  cleanFeatured();
+  $("#count").textContent = products.length + (products.length > 1 ? " produits" : " produit");
+  renderFeatured();
+  renderList();
+  save();
+}
+
+function renderFeatured(){
+  var box = $("#featChips");
+  if (!featured.length){
+    box.innerHTML = '<span class="feat-empty">Aucune pièce phare. Active « Pièce phare » sur un produit.</span>';
+    return;
+  }
+  box.innerHTML = featured.map(function(id, i){
+    var p = products.find(function(x){ return x.id === id; });
+    var name = p ? (p.name.fr || p.id) : id;
+    return '<span class="feat-chip" data-id="'+esc(id)+'">' +
+      '<span>'+esc(name)+'</span>' +
+      '<span class="ord">' +
+        '<button data-fmove="-1" title="Monter"'+(i===0?' disabled style="opacity:.3"':'')+'>▲</button>' +
+        '<button data-fmove="1" title="Descendre"'+(i===featured.length-1?' disabled style="opacity:.3"':'')+'>▼</button>' +
+      '</span>' +
+      '<button class="rm" data-frm title="Retirer">✕</button>' +
+    '</span>';
+  }).join("");
+}
+
+function renderList(){
+  var q = $("#search").value.trim().toLowerCase();
+  var cat = $("#catFilter").value;
+  var list = $("#plist");
+
+  var rows = products.map(function(p, idx){ return { p:p, idx:idx }; }).filter(function(o){
+    var p = o.p;
+    if (cat && p.category !== cat) return false;
+    if (q){
+      var hay = (p.name.fr + " " + p.name.ar + " " + p.id).toLowerCase();
+      if (hay.indexOf(q) === -1) return false;
+    }
+    return true;
+  });
+
+  if (!rows.length){
+    list.innerHTML = '<div class="empty-list">' + (products.length ? "Aucun produit ne correspond." : "Aucun produit. Clique « ＋ Nouveau produit ».") + '</div>';
+    return;
+  }
+
+  list.innerHTML = rows.map(function(o){
+    var p = o.p, idx = o.idx;
+    var img = p.images && p.images[0] ? resolveImg(p.images[0]) : "";
+    var thumb = '<div class="prow__thumb">' +
+      (img ? '<img src="'+esc(img)+'" alt="" onerror="this.remove()">' : '') +
+    '</div>';
+    var tags = "";
+    if (p.isNew) tags += '<span class="tagpill tagpill--new">New</span>';
+    if (p.isLimited) tags += '<span class="tagpill tagpill--lim">Limited</span>';
+    if (featured.indexOf(p.id) !== -1) tags += '<span class="tagpill tagpill--feat">Phare</span>';
+    return '<div class="prow" data-idx="'+idx+'">' +
+      thumb +
+      '<div class="prow__main">' +
+        '<div class="prow__name">'+esc(p.name.fr || "(sans nom)")+'<span class="ar">'+esc(p.name.ar||"")+'</span></div>' +
+        '<div class="prow__meta">' +
+          '<span>'+esc(CAT_LABELS[p.category] || p.category)+'</span>' +
+          '<span>·</span><span>'+money(p.price)+'</span>' +
+          '<span>·</span><span>'+((p.sizes||[]).join(" / ")||"—")+'</span>' +
+          tags +
+        '</div>' +
+      '</div>' +
+      '<div class="prow__actions">' +
+        '<label class="stock"><span class="switch '+(p.inStock?"on":"")+'" data-stock="'+idx+'"></span>'+(p.inStock?"En stock":"Rupture")+'</label>' +
+        '<span class="reorder"><button data-move="-1" data-idx="'+idx+'" title="Monter">▲</button><button data-move="1" data-idx="'+idx+'" title="Descendre">▼</button></span>' +
+        '<button class="icon-btn" data-edit="'+idx+'" title="Éditer">✎</button>' +
+        '<button class="icon-btn" data-dup="'+idx+'" title="Dupliquer">⧉</button>' +
+        '<button class="icon-btn danger" data-del="'+idx+'" title="Supprimer">🗑</button>' +
+      '</div>' +
+    '</div>';
+  }).join("");
+}
+
+function esc(s){
+  return String(s == null ? "" : s).replace(/[&<>"']/g, function(c){
+    return { "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c];
+  });
+}
+
+/* ============ ÉDITEUR ============ */
+function blankProduct(){
+  return {
+    id:"", category:"tshirts", price:0,
+    images:[""], sizes:["M"],
+    inStock:true, isNew:true, isLimited:false,
+    name:{fr:"",ar:""}, description:{fr:"",ar:""},
+    material:{fr:"",ar:""}, sizeGuideNote:{fr:"",ar:""}
+  };
+}
+
+function openEditor(idx){
+  editIndex = (typeof idx === "number") ? idx : -1;
+  draft = editIndex === -1 ? blankProduct() : clone(products[editIndex]);
+  if (!draft.images || !draft.images.length) draft.images = [""];
+  if (!draft.sizes) draft.sizes = [];
+  draft._featured = editIndex !== -1 && featured.indexOf(draft.id) !== -1;
+  draft._idTouched = editIndex !== -1;
+
+  $("#editorTitle").textContent = editIndex === -1 ? "Nouveau produit" : "Modifier : " + (draft.name.fr || draft.id);
+
+  $("#in-name-fr").value = draft.name.fr;
+  $("#in-name-ar").value = draft.name.ar;
+  $("#in-id").value = draft.id;
+  $("#in-price").value = draft.price || "";
+  $("#in-category").value = draft.category;
+  $("#in-desc-fr").value = draft.description.fr;
+  $("#in-desc-ar").value = draft.description.ar;
+  $("#in-mat-fr").value = draft.material.fr;
+  $("#in-mat-ar").value = draft.material.ar;
+  $("#in-sg-fr").value = draft.sizeGuideNote.fr;
+  $("#in-sg-ar").value = draft.sizeGuideNote.ar;
+  $("#in-size-custom").value = "";
+
+  clearErrors();
+  renderSizeChips();
+  renderImgRows();
+  renderSwitches();
+  updatePreview();
+
+  $("#editor").classList.add("show");
+  document.body.style.overflow = "hidden";
+  $("#editor").scrollTop = 0;
+  $("#in-name-fr").focus();
+}
+
+function closeEditor(){
+  $("#editor").classList.remove("show");
+  document.body.style.overflow = "";
+  draft = null;
+}
+
+function renderSwitches(){
+  $$("#editor .switch[data-sw]").forEach(function(sw){
+    var k = sw.getAttribute("data-sw");
+    var on = k === "featured" ? draft._featured : draft[k];
+    sw.classList.toggle("on", !!on);
+  });
+}
+
+function renderSizeChips(){
+  var all = SIZE_PRESET.slice();
+  draft.sizes.forEach(function(s){ if (all.indexOf(s) === -1) all.push(s); });
+  $("#sizeChips").innerHTML = all.map(function(s){
+    return '<button type="button" class="chip '+(draft.sizes.indexOf(s)!==-1?"on":"")+'" data-size="'+esc(s)+'">'+esc(s)+'</button>';
+  }).join("");
+}
+
+function renderImgRows(){
+  $("#imgRows").innerHTML = draft.images.map(function(v, i){
+    var resolved = resolveImg(v);
+    var prev = '<div class="imgrow__prev" data-ph="'+(resolved?"introuvable":"vide")+'">' +
+      (resolved ? '<img src="'+esc(resolved)+'" alt="" onerror="this.remove()">' : '') +
+    '</div>';
+    return '<div class="imgrow" data-i="'+i+'">' +
+      prev +
+      '<input type="text" value="'+esc(shortImg(v))+'" data-imginput="'+i+'" placeholder="nom-fichier.jpg  ou  https://…" />' +
+      '<div class="imgrow__ctrl">' +
+        '<button class="icon-btn" data-imgmove="-1" data-i="'+i+'" title="Monter"'+(i===0?' disabled style="opacity:.3"':'')+'>▲</button>' +
+        '<button class="icon-btn" data-imgmove="1" data-i="'+i+'" title="Descendre"'+(i===draft.images.length-1?' disabled style="opacity:.3"':'')+'>▼</button>' +
+        '<button class="icon-btn danger" data-imgdel="'+i+'" title="Retirer"'+(draft.images.length<=1?' disabled style="opacity:.3"':'')+'>✕</button>' +
+      '</div>' +
+    '</div>';
+  }).join("");
+}
+
+function updatePreview(){
+  syncDraftFromInputs();
+  $("#pcardCat").textContent = CAT_LABELS[draft.category] || draft.category;
+  $("#pcardName").textContent = draft.name.fr || "(nom du produit)";
+  $("#pcardPrice").textContent = money(draft.price);
+  var badges = "";
+  if (!draft.inStock) badges += '<span class="pcard__b">Rupture</span>';
+  if (draft.isNew) badges += '<span class="pcard__b">New</span>';
+  if (draft.isLimited) badges += '<span class="pcard__b lim">Limited</span>';
+  $("#pcardBadges").innerHTML = badges;
+  var img = resolveImg(draft.images[0]);
+  var el = $("#pcardImg");
+  if (img){
+    el.style.display = "block";
+    el.onerror = function(){ el.style.display = "none"; };
+    el.src = img;
+  } else {
+    el.removeAttribute("src"); el.style.display = "none";
+  }
+}
+
+/* Lit les champs texte -> draft (sans toucher sizes/images/switches déjà gérés à part) */
+function syncDraftFromInputs(){
+  draft.name.fr = $("#in-name-fr").value.trim();
+  draft.name.ar = $("#in-name-ar").value.trim();
+  draft.id = $("#in-id").value.trim();
+  draft.price = parseInt($("#in-price").value, 10) || 0;
+  draft.category = $("#in-category").value;
+  draft.description.fr = $("#in-desc-fr").value.trim();
+  draft.description.ar = $("#in-desc-ar").value.trim();
+  draft.material.fr = $("#in-mat-fr").value.trim();
+  draft.material.ar = $("#in-mat-ar").value.trim();
+  draft.sizeGuideNote.fr = $("#in-sg-fr").value.trim();
+  draft.sizeGuideNote.ar = $("#in-sg-ar").value.trim();
+  // images depuis les inputs
+  $$("#imgRows input[data-imginput]").forEach(function(inp){
+    var i = parseInt(inp.getAttribute("data-imginput"), 10);
+    draft.images[i] = inp.value.trim();
+  });
+}
+
+function clearErrors(){
+  $$("#editor .f").forEach(function(f){ f.classList.remove("err"); });
+  $("#size-err").style.display = "none";
+  $("#img-err").style.display = "none";
+}
+
+function validateDraft(){
+  syncDraftFromInputs();
+  var errs = [];
+  var setErr = function(sel){ var f = $('[data-f="'+sel+'"]'); if (f) f.classList.add("err"); };
+
+  if (!draft.name.fr){ setErr("name-fr"); errs.push("Nom FR manquant"); }
+  if (!draft.name.ar){ setErr("name-ar"); errs.push("Nom AR manquant"); }
+  if (!draft.id){ setErr("id"); errs.push("Identifiant manquant"); }
+  else {
+    var dup = products.some(function(p, i){ return p.id === draft.id && i !== editIndex; });
+    if (dup){ setErr("id"); errs.push("Identifiant « "+draft.id+" » déjà utilisé"); }
+  }
+  if (!(draft.price > 0)){ setErr("price"); errs.push("Prix invalide"); }
+  if (!draft.sizes.length){ $("#size-err").style.display = "block"; errs.push("Aucune taille sélectionnée"); }
+  var imgs = draft.images.map(function(s){ return s.trim(); }).filter(Boolean);
+  if (!imgs.length){ $("#img-err").style.display = "block"; errs.push("Aucune photo"); }
+  if (!draft.description.fr){ setErr("desc-fr"); errs.push("Description FR manquante"); }
+  if (!draft.description.ar){ setErr("desc-ar"); errs.push("Description AR manquante"); }
+
+  return errs;
+}
+
+function saveDraft(){
+  var errs = validateDraft();
+  if (errs.length){ toast("Corrige les champs en rouge", true); return; }
+
+  // nettoyage final
+  draft.images = draft.images.map(function(s){ return resolveImg(s); }).filter(Boolean);
+  var featFlag = draft._featured;
+  var oldId = editIndex !== -1 ? products[editIndex].id : null;
+  delete draft._featured;
+  delete draft._idTouched;
+
+  if (editIndex === -1){
+    products.push(draft);
+  } else {
+    products[editIndex] = draft;
+    // si l'id a changé, répercuter dans featured
+    if (oldId && oldId !== draft.id){
+      var fi = featured.indexOf(oldId);
+      if (fi !== -1) featured[fi] = draft.id;
+    }
+  }
+  // pièce phare
+  var idx = featured.indexOf(draft.id);
+  if (featFlag && idx === -1) featured.push(draft.id);
+  if (!featFlag && idx !== -1) featured.splice(idx, 1);
+
+  markDirty();
+  render();
+  closeEditor();
+  toast(editIndex === -1 ? "Produit ajouté" : "Produit enregistré");
+}
+
+/* ============ TÉLÉCHARGEMENT ============ */
+function buildFile(){
+  var head =
+"/* =====================================================================\n" +
+"   VYRON — CATALOGUE PRODUITS\n" +
+"   Généré par admin.html le " + new Date().toLocaleString("fr-FR") + "\n" +
+"   Pour publier : place ce fichier à la racine du site (à côté de\n" +
+"   index.html), puis ré-uploade le dossier chez ton hébergeur.\n" +
+"   ===================================================================== */\n\n";
+  return head +
+    "window.VYRON_PRODUCTS = " + JSON.stringify(products, null, 2) + ";\n\n" +
+    "window.VYRON_FEATURED = " + JSON.stringify(featured) + ";\n";
+}
+
+function validateAll(){
+  var problems = [];
+  var seen = {};
+  products.forEach(function(p, i){
+    var label = (p.name && p.name.fr) || p.id || ("produit #" + (i+1));
+    if (!p.id) problems.push(label + " : identifiant manquant");
+    else if (seen[p.id]) problems.push("identifiant en double : « " + p.id + " »");
+    seen[p.id] = true;
+    if (!p.name || !p.name.fr) problems.push(label + " : nom FR manquant");
+    if (!p.name || !p.name.ar) problems.push(label + " : nom AR manquant");
+    if (!(p.price > 0)) problems.push(label + " : prix invalide");
+    if (!p.sizes || !p.sizes.length) problems.push(label + " : aucune taille");
+    if (!p.images || !p.images.filter(Boolean).length) problems.push(label + " : aucune photo");
+    if (!p.description || !p.description.fr) problems.push(label + " : description FR manquante");
+    if (!p.description || !p.description.ar) problems.push(label + " : description AR manquante");
+    if (["tshirts","shorts","joggers","jackets","caps"].indexOf(p.category) === -1)
+      problems.push(label + " : catégorie inconnue (" + p.category + ")");
+  });
+  return problems;
+}
+
+function download(){
+  if (!products.length){ toast("Aucun produit à exporter", true); return; }
+  var problems = validateAll();
+  if (problems.length){
+    $("#vlist").innerHTML = problems.slice(0, 30).map(function(p){ return "<li>" + esc(p) + "</li>"; }).join("");
+    $("#vmodal").classList.add("show");
+    return;
+  }
+  var blob = new Blob([buildFile()], { type: "text/javascript;charset=utf-8" });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement("a");
+  a.href = url; a.download = "products-data.js";
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+  dirty = false;
+  $("#dirty").classList.remove("show");
+  toast("Fichier téléchargé — remplace products-data.js");
+}
+
+/* ============ IMPORT ============ */
+function importFile(text){
+  var sandbox = {};
+  try{
+    (new Function("window", text + "\n;return window;"))(sandbox);
+  }catch(e){
+    toast("Fichier illisible : " + e.message, true); return;
+  }
+  if (!Array.isArray(sandbox.VYRON_PRODUCTS)){
+    toast("Ce fichier ne contient pas window.VYRON_PRODUCTS", true); return;
+  }
+  products = clone(sandbox.VYRON_PRODUCTS);
+  featured = Array.isArray(sandbox.VYRON_FEATURED) ? clone(sandbox.VYRON_FEATURED) : [];
+  markDirty();
+  render();
+  toast(products.length + " produits importés");
+}
+
+/* ============ ÉVÉNEMENTS ============ */
+function bind(){
+
+  $("#btnNew").addEventListener("click", function(){ openEditor(); });
+  $("#btnDownload").addEventListener("click", download);
+
+  // menu
+  var menu = $("#menu");
+  $("#btnMenu").addEventListener("click", function(e){ e.stopPropagation(); menu.classList.toggle("show"); });
+  document.addEventListener("click", function(){ menu.classList.remove("show"); });
+  menu.addEventListener("click", function(e){ e.stopPropagation(); });
+  $("#mImport").addEventListener("click", function(){ menu.classList.remove("show"); $("#fileInput").click(); });
+  $("#fileInput").addEventListener("change", function(e){
+    var f = e.target.files[0]; if (!f) return;
+    var r = new FileReader();
+    r.onload = function(){ importFile(String(r.result)); };
+    r.readAsText(f);
+    e.target.value = "";
+  });
+  $("#mReloadFile").addEventListener("click", function(){
+    menu.classList.remove("show");
+    if (!confirm("Recharger depuis products-data.js et perdre le brouillon local en cours ?")) return;
+    var seed = seedFromFile();
+    products = seed.products; featured = seed.featured;
+    dirty = false; $("#dirty").classList.remove("show");
+    render(); toast("Rechargé depuis le fichier");
+  });
+  $("#mClear").addEventListener("click", function(){
+    menu.classList.remove("show");
+    if (!confirm("Vider complètement le brouillon local ? Le fichier products-data.js n'est pas touché.")) return;
+    try{ localStorage.removeItem(LS_KEY); }catch(e){}
+    location.reload();
+  });
+
+  // recherche / filtre
+  $("#search").addEventListener("input", renderList);
+  $("#catFilter").addEventListener("change", renderList);
+
+  // liste (délégation)
+  $("#plist").addEventListener("click", function(e){
+    var t = e.target.closest("button, .switch"); if (!t) return;
+
+    if (t.hasAttribute("data-stock")){
+      var i = +t.getAttribute("data-stock");
+      products[i].inStock = !products[i].inStock;
+      markDirty(); render(); return;
+    }
+    if (t.hasAttribute("data-move")){
+      var idx = +t.getAttribute("data-idx");
+      var dir = +t.getAttribute("data-move");
+      var j = idx + dir;
+      if (j < 0 || j >= products.length) return;
+      var tmp = products[idx]; products[idx] = products[j]; products[j] = tmp;
+      markDirty(); render(); return;
+    }
+    if (t.hasAttribute("data-edit")){ openEditor(+t.getAttribute("data-edit")); return; }
+    if (t.hasAttribute("data-dup")){
+      var src = products[+t.getAttribute("data-dup")];
+      var copy = clone(src);
+      copy.id = uniqueId(src.id + "-copie");
+      copy.name = { fr: src.name.fr + " (copie)", ar: src.name.ar };
+      copy.isNew = true;
+      products.splice(+t.getAttribute("data-dup") + 1, 0, copy);
+      markDirty(); render(); toast("Produit dupliqué"); return;
+    }
+    if (t.hasAttribute("data-del")){
+      var di = +t.getAttribute("data-del");
+      if (!confirm('Supprimer « ' + (products[di].name.fr || products[di].id) + ' » ?')) return;
+      products.splice(di, 1);
+      markDirty(); render(); toast("Produit supprimé"); return;
+    }
+  });
+
+  // featured strip
+  $("#featChips").addEventListener("click", function(e){
+    var t = e.target.closest("button"); if (!t) return;
+    var chip = t.closest(".feat-chip"); var id = chip.getAttribute("data-id");
+    var i = featured.indexOf(id);
+    if (t.hasAttribute("data-frm")){ featured.splice(i, 1); markDirty(); render(); return; }
+    if (t.hasAttribute("data-fmove")){
+      var j = i + (+t.getAttribute("data-fmove"));
+      if (j < 0 || j >= featured.length) return;
+      var tmp = featured[i]; featured[i] = featured[j]; featured[j] = tmp;
+      markDirty(); render();
+    }
+  });
+
+  // ---- éditeur ----
+  $("#editorClose").addEventListener("click", closeEditor);
+  $("#editorCancel").addEventListener("click", closeEditor);
+  $("#editorSave").addEventListener("click", saveDraft);
+  $("#editor").addEventListener("click", function(e){ if (e.target === e.currentTarget) closeEditor(); });
+  document.addEventListener("keydown", function(e){ if (e.key === "Escape"){ closeEditor(); $("#vmodal").classList.remove("show"); } });
+
+  // nom FR -> propose un id tant qu'il n'a pas été édité manuellement
+  $("#in-name-fr").addEventListener("input", function(){
+    if (!draft._idTouched){
+      $("#in-id").value = slugify($("#in-name-fr").value);
+    }
+    updatePreview();
+  });
+  $("#in-id").addEventListener("input", function(){
+    draft._idTouched = true;
+    $("#in-id").value = $("#in-id").value.toLowerCase().replace(/[^a-z0-9-]/g, "");
+  });
+
+  ["in-name-ar","in-price","in-category","in-desc-fr","in-desc-ar","in-mat-fr","in-mat-ar","in-sg-fr","in-sg-ar"]
+    .forEach(function(id){ $("#"+id).addEventListener("input", updatePreview); });
+
+  // tailles
+  $("#sizeChips").addEventListener("click", function(e){
+    var b = e.target.closest("[data-size]"); if (!b) return;
+    var s = b.getAttribute("data-size");
+    var i = draft.sizes.indexOf(s);
+    if (i === -1) draft.sizes.push(s); else draft.sizes.splice(i, 1);
+    renderSizeChips();
+    $("#size-err").style.display = "none";
+  });
+  $("#in-size-custom").addEventListener("keydown", function(e){
+    if (e.key !== "Enter") return;
+    e.preventDefault();
+    var v = e.target.value.trim();
+    if (v && draft.sizes.indexOf(v) === -1) draft.sizes.push(v);
+    e.target.value = "";
+    renderSizeChips();
+  });
+
+  // images
+  $("#btnAddImg").addEventListener("click", function(){
+    syncDraftFromInputs();
+    draft.images.push("");
+    renderImgRows();
+  });
+  $("#imgRows").addEventListener("click", function(e){
+    var b = e.target.closest("button"); if (!b) return;
+    syncDraftFromInputs();
+    if (b.hasAttribute("data-imgdel")){
+      draft.images.splice(+b.getAttribute("data-i"), 1);
+      if (!draft.images.length) draft.images = [""];
+      renderImgRows(); updatePreview(); return;
+    }
+    if (b.hasAttribute("data-imgmove")){
+      var i = +b.getAttribute("data-i"); var j = i + (+b.getAttribute("data-imgmove"));
+      if (j < 0 || j >= draft.images.length) return;
+      var tmp = draft.images[i]; draft.images[i] = draft.images[j]; draft.images[j] = tmp;
+      renderImgRows(); updatePreview();
+    }
+  });
+  $("#imgRows").addEventListener("input", function(e){
+    if (!e.target.matches("input[data-imginput]")) return;
+    var i = +e.target.getAttribute("data-imginput");
+    draft.images[i] = e.target.value.trim();
+    // maj de l'aperçu de cette ligne
+    var box = e.target.closest(".imgrow").querySelector(".imgrow__prev");
+    var resolved = resolveImg(draft.images[i]);
+    box.setAttribute("data-ph", resolved ? "introuvable" : "vide");
+    box.innerHTML = "";
+    if (resolved){
+      var im = document.createElement("img");
+      im.onerror = function(){ im.remove(); };
+      im.src = resolved;
+      box.appendChild(im);
+    }
+    if (i === 0) updatePreview();
+  });
+
+  // switches statut
+  $$("#editor .switch[data-sw]").forEach(function(sw){
+    sw.addEventListener("click", function(){
+      var k = sw.getAttribute("data-sw");
+      if (k === "featured") draft._featured = !draft._featured;
+      else draft[k] = !draft[k];
+      sw.classList.toggle("on");
+      updatePreview();
+    });
+  });
+
+  // validation modal
+  $("#vclose").addEventListener("click", function(){ $("#vmodal").classList.remove("show"); });
+  $("#vmodal").addEventListener("click", function(e){ if (e.target === e.currentTarget) $("#vmodal").classList.remove("show"); });
+
+  // avertir si on quitte avec un brouillon non téléchargé
+  window.addEventListener("beforeunload", function(e){
+    if (dirty){ e.preventDefault(); e.returnValue = ""; }
+  });
+}
+
+function uniqueId(base){
+  base = slugify(base) || "produit";
+  var id = base, n = 2;
+  var exists = function(x){ return products.some(function(p){ return p.id === x; }); };
+  while (exists(id)){ id = base + "-" + n; n++; }
+  return id;
+}
+
+/* ============ INIT ============ */
+if (!Array.isArray(window.VYRON_PRODUCTS)){
+  document.querySelector(".help").insertAdjacentHTML("afterbegin",
+    '<div style="color:var(--blood-bright);margin-bottom:10px"><b>products-data.js introuvable ou invalide.</b> ' +
+    'Place admin.html dans le même dossier que products-data.js, ou importe un fichier via le menu ⋯.</div>');
+}
+load();
+bind();
+render();
+
+})();
+</script>
+</body>
+</html>

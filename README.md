@@ -1,14 +1,17 @@
 # VYRON — Boutique en ligne
 
 Site e-commerce **une seule page** pour la marque streetwear algérienne **VYRON**.
-Front-end en 3 fichiers séparés (HTML / CSS / JS), zéro librairie externe.
+Front-end statique (HTML / CSS / JS), zéro librairie externe.
+Les produits se gèrent dans une page privée **`admin.html`**.
 Le suivi des commandes se fait via un Google Sheet (`google-apps-script.gs`).
 
 ```
 VYRON/
-├─ index.html              ← structure de la page (à ouvrir dans un navigateur)
+├─ index.html              ← la boutique (à ouvrir / mettre en ligne)
+├─ admin.html              ← 🔒 page privée : ajouter / modifier tes produits + le stock
 ├─ styles.css              ← tout le design (couleurs, mise en page, animations)
-├─ script.js               ← toute la logique + LA CONFIG À ÉDITER (produits, tarifs…)
+├─ script.js               ← la logique + la CONFIG (WhatsApp, Google Sheet, tarifs livraison)
+├─ products-data.js        ← TON CATALOGUE (généré par admin.html — ne pas éditer à la main)
 ├─ google-apps-script.gs   ← backend commandes (Google Sheet)
 ├─ README.md               ← ce fichier
 └─ assets/
@@ -16,53 +19,79 @@ VYRON/
    └─ lookbook/            ← photos lookbook
 ```
 
-> Les 3 fichiers doivent rester **dans le même dossier** : `index.html` charge
-> `styles.css` et `script.js` par leur nom.
-> **Presque tous tes réglages se font désormais dans `script.js`** (sections numérotées en haut du fichier).
+> Tous les fichiers doivent rester **dans le même dossier**.
+> `admin.html` ne se met **jamais en ligne** — c'est ton outil perso. Tu peux même le
+> supprimer du dossier avant d'uploader le site (ou laisser, il est en `noindex`).
 
-Ouvre `index.html` dans un navigateur : le site fonctionne immédiatement (panier, filtres,
-recherche, checkout, WhatsApp). Il reste 5 réglages à faire pour la mise en production.
-
----
-
-## 1. Remplacer les photos produits
-
-Les images sont dans `assets/products/`. Pour changer une photo :
-
-1. Dépose ta nouvelle image dans `assets/products/` (format `.jpg` ou `.png`, idéalement **1000 × 1250 px**, ratio 4:5).
-2. Ouvre `script.js`, va dans la section **`2. PRODUITS`**.
-3. Dans le produit concerné, modifie le tableau `images` :
-
-```js
-images: ["assets/products/mon-tee-1.jpg", "assets/products/mon-tee-2.jpg"],
-//         ↑ image principale            ↑ 2e image (survol + galerie)
-```
-
-- 1re image = vignette + image principale.
-- Les suivantes = galerie dans l'aperçu rapide + effet de survol sur la grille.
-- Si une image ne charge pas, un visuel « VYRON » de secours s'affiche automatiquement.
-
-> Les chemins d'images du **lookbook** et du strip **Instagram** sont dans `script.js`
-> (fonctions `renderLookbook()` / `renderInstagram()`, commentaire `REPLACE LOOKBOOK IMAGE HERE`).
-> Pour le **hero**, ouvre `styles.css`, cherche `.hero__bg` (commentaire `REPLACE HERO IMAGE HERE`)
-> et remplace l'URL Unsplash par `assets/hero.jpg`.
+Ouvre `index.html` dans un navigateur : la boutique fonctionne immédiatement (panier, filtres,
+recherche, checkout, WhatsApp). Réglages restants pour la mise en production : sections 4 à 6.
 
 ---
 
-## 2. Modifier prix / tailles / stock / descriptions
+## 1. Ajouter un produit / changer le stock  →  `admin.html`
 
-Toujours dans la section **`2. PRODUITS`** de `script.js`. Un produit ressemble à ça :
+**Tout se passe dans `admin.html`. Tu ne touches jamais au code.**
+
+### Ajouter un nouveau produit
+
+1. **Photos d'abord** : mets la ou les images dans `assets/products/`
+   (`.jpg` ou `.png`, idéalement **1000 × 1250 px**, ratio 4:5).
+2. Double-clique **`admin.html`** → bouton **« ＋ Nouveau produit »**.
+3. Remplis les champs :
+   - Nom **FR + AR**, identifiant (proposé automatiquement)
+   - Prix en DA, catégorie
+   - Tailles (clique les pastilles S / M / L / XL… ou ajoute une taille sur mesure)
+   - Statut : *En stock*, badge *New*, badge *Limited*, *Pièce phare*
+   - **Photos** : écris juste le nom du fichier (ex : `mon-tee-1.jpg`) — un aperçu s'affiche
+     tout de suite. Tu peux aussi coller une URL `https://…`. Ajoute-en plusieurs pour la galerie.
+   - Descriptions **FR + AR** (obligatoires), matière et note de tailles (optionnelles)
+4. **Enregistrer le produit**.
+5. Bouton **« ⬇ Télécharger products-data.js »** → un fichier `products-data.js` est téléchargé.
+6. **Remplace** l'ancien `products-data.js` du dossier VYRON par celui téléchargé.
+7. Ré-uploade le dossier chez ton hébergeur (voir section 6). En ligne.
+
+### Changer le stock (rupture / de nouveau dispo)
+
+Dans `admin.html`, la liste des produits a un interrupteur **En stock** sur chaque ligne.
+Clique-le → **⬇ Télécharger products-data.js** → remplace le fichier → ré-uploade.
+Un produit en rupture reste visible mais le bouton « Ajouter au panier » est désactivé.
+
+### Modifier, dupliquer, supprimer, réordonner
+
+- ✎ éditer · ⧉ dupliquer (pratique pour une variante) · 🗑 supprimer · ▲▼ changer l'ordre.
+- **Pièces phares** (grand bloc « Collection » de l'accueil) : active *Pièce phare* sur un produit,
+  puis réordonne-les dans le bandeau en haut d'`admin.html`. 3 ou 4 recommandés.
+
+### Bon à savoir
+
+- Tes changements sont **sauvegardés automatiquement dans ton navigateur** (brouillon) tant que
+  tu n'as pas téléchargé. Le bandeau « Brouillon non téléchargé » te le rappelle.
+- Menu **⋯** : *Importer* un `products-data.js` existant (ex : depuis un autre PC),
+  *Repartir du fichier*, *Vider le brouillon local*.
+- `admin.html` vérifie tout avant l'export : si un produit a un champ manquant, il te liste
+  les erreurs et bloque le téléchargement.
+- Si une photo ne charge pas sur le site, un visuel « VYRON » de secours s'affiche à la place.
+
+> **Lookbook / Instagram / Hero** ne passent pas par `admin.html` :
+> lookbook + Instagram = `script.js` (`renderLookbook()` / `renderInstagram()`),
+> hero = `styles.css` (`.hero__bg`, commentaire `REPLACE HERO IMAGE HERE`).
+
+---
+
+## 2. Éditer un produit à la main (optionnel)
+
+Si tu préfères, `products-data.js` est juste une liste JavaScript. Un produit :
 
 ```js
 {
-  id: "shadow-beast-tee",        // identifiant unique — ne pas mettre d'espace
+  id: "shadow-beast-tee",        // identifiant unique, minuscules et tirets
   category: "tshirts",           // tshirts | shorts | joggers | jackets | caps
-  price: 3800,                   // PRIX EN DA (nombre, sans espace ni "DA")
+  price: 3800,                   // PRIX EN DA (nombre)
   images: ["assets/products/shadow-beast-1.jpg"],
-  sizes: ["S", "M", "L", "XL", "XXL"],   // tailles proposées
-  inStock: true,                 // false  → "Rupture de stock", bouton désactivé
-  isNew: true,                   // true   → badge "New" + tri "Nouveautés"
-  isLimited: true,               // true   → badge "Limited"
+  sizes: ["S", "M", "L", "XL", "XXL"],
+  inStock: true,                 // false → "Rupture de stock", bouton désactivé
+  isNew: true,                   // badge "New"
+  isLimited: true,               // badge "Limited"
   name:        { fr: "T-Shirt Shadow Beast", ar: "تيشيرت شادو بيست" },
   description: { fr: "…", ar: "…" },
   material:    { fr: "…", ar: "…" },
@@ -70,14 +99,9 @@ Toujours dans la section **`2. PRODUITS`** de `script.js`. Un produit ressemble 
 }
 ```
 
-- **Chaque texte doit être renseigné en français (`fr`) ET en arabe (`ar`).**
-- **Ajouter un produit** : copie un bloc `{ … }` entier, colle-le dans le tableau `PRODUCTS`,
-  change au minimum `id`, `name`, `price`, `images`, `category`.
-- **Retirer un produit** : supprime son bloc `{ … }` (et la virgule).
-- **Mettre en rupture** : `inStock: false`.
-- **Pièces phares** (section « Collection ») : édite la liste `FEATURED_IDS` juste sous `PRODUCTS`.
-
-Catégories reconnues (pour les filtres) : `tshirts`, `shorts`, `joggers`, `jackets`, `caps`.
+Les **pièces phares** sont la liste `window.VYRON_FEATURED` en bas du fichier (des `id`, dans l'ordre).
+Si tu édites `products-data.js` à la main, ré-importe-le ensuite dans `admin.html` (menu ⋯ → Importer)
+pour que les deux restent synchro.
 
 ---
 
@@ -177,7 +201,10 @@ Le site est un simple dossier de fichiers statiques : il s'héberge gratuitement
 2. Onglet **Sites → Add new site → Deploy manually**.
 3. Glisse le **dossier `VYRON`** entier dans la zone de dépôt.
 4. En ligne en ~20 secondes sur une URL `xxxx.netlify.app` (renommable, domaine perso possible).
-5. Pour mettre à jour : re-glisse le dossier.
+5. Pour mettre à jour : re-glisse le dossier (avec le nouveau `products-data.js` et les photos).
+
+> `admin.html` peut rester dans le dossier (il est en `noindex` et ne peut rien casser sur le
+> site en ligne), ou tu peux le retirer avant d'uploader si tu préfères qu'il soit vraiment privé.
 
 ### Option B — Vercel
 1. Compte sur <https://vercel.com>, installe l'outil : `npm i -g vercel`.
@@ -194,25 +221,29 @@ Le site est un simple dossier de fichiers statiques : il s'héberge gratuitement
 
 ---
 
-## Récapitulatif des réglages (section `1. CONFIG` de `script.js`)
+## Récapitulatif — où régler quoi
 
-| Constante | Rôle |
+| Quoi | Où |
 |---|---|
-| `WHATSAPP_NUMBER` | Numéro WhatsApp (format `213…`) |
-| `SHEET_ENDPOINT` | URL du Web App Google Apps Script |
-| `SOCIAL.instagram` / `SOCIAL.tiktok` | Liens réseaux sociaux |
-| `PRODUCTS` | Catalogue produits (prix, tailles, stock, textes FR/AR) |
-| `FEATURED_IDS` | Produits affichés en « Pièces phares » |
-| `WILAYA_DELIVERY_FEES` | Frais de livraison par wilaya (`home` / `desk`) |
+| Produits, stock, pièces phares | **`admin.html`** (génère `products-data.js`) |
+| Numéro WhatsApp — `WHATSAPP_NUMBER` | `script.js`, section `1. CONFIG` (format `213…`) |
+| URL Google Sheet — `SHEET_ENDPOINT` | `script.js`, section `1. CONFIG` |
+| Liens réseaux — `SOCIAL.instagram` / `.tiktok` | `script.js`, section `1. CONFIG` |
+| Frais de livraison — `WILAYA_DELIVERY_FEES` | `script.js`, section `3` (`home` / `desk` par wilaya) |
+| Photo du hero | `styles.css`, `.hero__bg` |
+| Images lookbook / Instagram | `script.js`, `renderLookbook()` / `renderInstagram()` |
 
 ---
 
 ## Notes techniques
 
-- **3 fichiers, aucune librairie externe** : `index.html` (structure) + `styles.css` (design)
-  + `script.js` (logique + config). Icônes en SVG inline. À garder dans le même dossier.
-  Seule ressource distante : Google Fonts (Cinzel Decorative / Inter / Noto Kufi Arabic).
-- **Aucun build** : rien à compiler. On modifie les fichiers, on recharge la page.
+- **Aucune librairie externe, aucun build** : `index.html` + `styles.css` + `script.js`
+  + `products-data.js` (catalogue) + `admin.html` (outil produits, hors ligne). Icônes en SVG
+  inline. Tout dans le même dossier. Seule ressource distante : Google Fonts.
+- **`products-data.js`** est chargé avant `script.js` et fournit `window.VYRON_PRODUCTS` /
+  `window.VYRON_FEATURED`. C'est le fichier généré par `admin.html`.
+- **`admin.html`** : 100 % local, stocke ton brouillon dans `localStorage` (`vyron_admin_v2`),
+  n'envoie rien nulle part. À ne pas mettre en ligne (marqué `noindex` par sécurité).
 - **Bilingue FR/AR** : bouton `FR | AR` dans l'en-tête. En arabe, la page passe en RTL
   (`document.dir = "rtl"`) et tout le texte est ré-affiché sans recharger.
 - **Panier persistant** : sauvegardé dans `localStorage` (`vyron_cart_v1`), survit au rafraîchissement.

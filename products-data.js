@@ -1,18 +1,53 @@
 /* =====================================================================
    VYRON — CATALOGUE PRODUITS
-   ---------------------------------------------------------------------
-   Ce fichier est géré par  admin.html  (interface visuelle).
-   Pour ajouter / modifier un produit ou changer le stock :
-     1. ouvre  admin.html  dans ton navigateur
-     2. fais tes changements
-     3. clique « Télécharger products-data.js »
-     4. remplace CE fichier par celui téléchargé
-     5. ré-uploade le dossier chez ton hébergeur
-
-   Liste vidée — prête à recevoir tes vrais produits via admin.html.
+   Généré par admin.html le 20/09/2026 21:46:24
+   Pour publier : place ce fichier à la racine du site (à côté de
+   index.html), puis ré-uploade le dossier chez ton hébergeur.
    ===================================================================== */
 
-window.VYRON_PRODUCTS = [];
+window.VYRON_PRODUCTS = [
+  {
+    "id": "pull",
+    "category": "tshirts",
+    "price": 2000,
+    "images": [
+      "assets/products/image1.jpg"
+    ],
+    "sizes": [
+      "M",
+      "S",
+      "L"
+    ],
+    "colors": [
+      {
+        "hex": "#000000",
+        "name": "noir"
+      },
+      {
+        "hex": "#ffffff",
+        "name": "blanc"
+      }
+    ],
+    "inStock": true,
+    "isNew": true,
+    "isLimited": false,
+    "name": {
+      "fr": "pull",
+      "ar": "pull"
+    },
+    "description": {
+      "fr": "new arrivage",
+      "ar": "new arrivage"
+    },
+    "material": {
+      "fr": "",
+      "ar": ""
+    },
+    "sizeGuideNote": {
+      "fr": "",
+      "ar": ""
+    }
+  }
+];
 
-/* id des produits affichés dans « Pièces phares » (réservé, pas encore utilisé sur le site) */
 window.VYRON_FEATURED = [];

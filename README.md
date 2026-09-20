@@ -5,6 +5,8 @@ Front-end statique (HTML / CSS / JS), zéro librairie externe.
 Les produits se gèrent dans une page privée **`admin.html`**.
 Le suivi des commandes se fait via un Google Sheet (`google-apps-script.gs`).
 
+hhh
+
 ```
 VYRON/
 ├─ index.html              ← la boutique (à ouvrir / mettre en ligne)

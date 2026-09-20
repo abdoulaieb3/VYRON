@@ -59,8 +59,9 @@ Un produit en rupture reste visible mais le bouton « Ajouter au panier » est d
 ### Modifier, dupliquer, supprimer, réordonner
 
 - ✎ éditer · ⧉ dupliquer (pratique pour une variante) · 🗑 supprimer · ▲▼ changer l'ordre.
-- **Pièces phares** (grand bloc « Collection » de l'accueil) : active *Pièce phare* sur un produit,
-  puis réordonne-les dans le bandeau en haut d'`admin.html`. 3 ou 4 recommandés.
+- **Pièce phare** : un champ réservé pour plus tard. La page d'accueil n'a plus de section
+  « Pièces phares » pour l'instant (retirée), donc ce champ n'a aucun effet visible sur le site —
+  il ne sert qu'à préparer une éventuelle mise en avant future.
 
 ### Bon à savoir
 
@@ -99,7 +100,8 @@ Si tu préfères, `products-data.js` est juste une liste JavaScript. Un produit 
 }
 ```
 
-Les **pièces phares** sont la liste `window.VYRON_FEATURED` en bas du fichier (des `id`, dans l'ordre).
+La liste `window.VYRON_FEATURED` en bas du fichier existe pour un usage futur (champ *Pièce phare*
+dans `admin.html`) — elle n'est lue par aucune section du site actuellement.
 Si tu édites `products-data.js` à la main, ré-importe-le ensuite dans `admin.html` (menu ⋯ → Importer)
 pour que les deux restent synchro.
 
@@ -240,8 +242,9 @@ Le site est un simple dossier de fichiers statiques : il s'héberge gratuitement
 - **Aucune librairie externe, aucun build** : `index.html` + `styles.css` + `script.js`
   + `products-data.js` (catalogue) + `admin.html` (outil produits, hors ligne). Icônes en SVG
   inline. Tout dans le même dossier. Seule ressource distante : Google Fonts.
-- **`products-data.js`** est chargé avant `script.js` et fournit `window.VYRON_PRODUCTS` /
-  `window.VYRON_FEATURED`. C'est le fichier généré par `admin.html`.
+- **`products-data.js`** est chargé avant `script.js` et fournit `window.VYRON_PRODUCTS`
+  (le catalogue affiché) et `window.VYRON_FEATURED` (réservé, pas encore utilisé sur le site).
+  C'est le fichier généré par `admin.html`.
 - **`admin.html`** : 100 % local, stocke ton brouillon dans `localStorage` (`vyron_admin_v2`),
   n'envoie rien nulle part. À ne pas mettre en ligne (marqué `noindex` par sécurité).
 - **Bilingue FR/AR** : bouton `FR | AR` dans l'en-tête. En arabe, la page passe en RTL

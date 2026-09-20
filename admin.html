@@ -145,6 +145,11 @@ legend{ font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; color:
 .imgrow input{ width:100%; padding:9px 11px; background:var(--charcoal-2); border:1px solid var(--line); color:var(--off-white); }
 .imgrow__ctrl{ display:flex; gap:4px; }
 
+/* color rows */
+.colorrow{ display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+.colorrow input[type=color]{ width:44px; height:38px; padding:2px; background:var(--charcoal-2); border:1px solid var(--line); cursor:pointer; flex-shrink:0; }
+.colorrow input[type=text]{ flex:1; padding:9px 11px; background:var(--charcoal-2); border:1px solid var(--line); color:var(--off-white); }
+
 /* live preview card */
 .preview{ border:1px solid var(--line-soft); padding:16px; margin-top:6px; }
 .preview h3{ font-size:10px; letter-spacing:.16em; text-transform:uppercase; color:var(--muted); margin-bottom:12px; }
@@ -222,7 +227,7 @@ legend{ font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; color:
   </div>
 
   <div class="feat-panel">
-    <h2>Pièces phares · section « Collection » de la page d'accueil (ordre respecté)</h2>
+    <h2>Pièces phares (réservé — non affiché sur le site pour le moment)</h2>
     <div class="feat-chips" id="featChips"></div>
   </div>
 
@@ -235,6 +240,7 @@ legend{ font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; color:
       <option value="joggers">Joggers</option>
       <option value="jackets">Vestes</option>
       <option value="caps">Casquettes</option>
+      <option value="backpacks">Sacs & Backpacks</option>
     </select>
   </div>
 
@@ -288,6 +294,7 @@ legend{ font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; color:
               <option value="joggers">Joggers</option>
               <option value="jackets">Vestes</option>
               <option value="caps">Casquettes</option>
+              <option value="backpacks">Sacs & Backpacks</option>
             </select>
           </div>
         </div>
@@ -302,6 +309,13 @@ legend{ font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; color:
           <div class="hint">Entrée pour ajouter.</div>
         </div>
         <div class="errmsg" id="size-err" style="display:none;color:var(--blood-bright);font-size:11px;margin-top:6px">Choisis au moins une taille.</div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Couleurs (optionnel)</legend>
+        <div id="colorRows"></div>
+        <button class="btn btn--sm btn--ghost" id="btnAddColor" type="button">＋ Ajouter une couleur</button>
+        <div class="hint" style="margin-top:8px">Choisis une couleur et donne-lui un nom (ex : Noir, Blanc, Rouge sang). Affichées en pastilles cliquables sur la fiche produit.</div>
       </fieldset>
 
       <fieldset>
@@ -403,7 +417,7 @@ legend{ font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; color:
 
 /* ============ CONSTANTES ============ */
 var LS_KEY = "vyron_admin_v2";
-var CAT_LABELS = { tshirts:"T-Shirts", shorts:"Shorts", joggers:"Joggers", jackets:"Vestes", caps:"Casquettes" };
+var CAT_LABELS = { tshirts:"T-Shirts", shorts:"Shorts", joggers:"Joggers", jackets:"Vestes", caps:"Casquettes", backpacks:"Sacs & Backpacks" };
 var SIZE_PRESET = ["S","M","L","XL","XXL","Unique"];
 var IMG_DIR = "assets/products/";
 
@@ -578,7 +592,7 @@ function esc(s){
 function blankProduct(){
   return {
     id:"", category:"tshirts", price:0,
-    images:[""], sizes:["M"],
+    images:[""], sizes:["M"], colors:[],
     inStock:true, isNew:true, isLimited:false,
     name:{fr:"",ar:""}, description:{fr:"",ar:""},
     material:{fr:"",ar:""}, sizeGuideNote:{fr:"",ar:""}
@@ -590,6 +604,7 @@ function openEditor(idx){
   draft = editIndex === -1 ? blankProduct() : clone(products[editIndex]);
   if (!draft.images || !draft.images.length) draft.images = [""];
   if (!draft.sizes) draft.sizes = [];
+  if (!draft.colors) draft.colors = [];
   draft._featured = editIndex !== -1 && featured.indexOf(draft.id) !== -1;
   draft._idTouched = editIndex !== -1;
 
@@ -610,6 +625,7 @@ function openEditor(idx){
 
   clearErrors();
   renderSizeChips();
+  renderColorRows();
   renderImgRows();
   renderSwitches();
   updatePreview();
@@ -656,6 +672,16 @@ function renderImgRows(){
         '<button class="icon-btn" data-imgmove="1" data-i="'+i+'" title="Descendre"'+(i===draft.images.length-1?' disabled style="opacity:.3"':'')+'>▼</button>' +
         '<button class="icon-btn danger" data-imgdel="'+i+'" title="Retirer"'+(draft.images.length<=1?' disabled style="opacity:.3"':'')+'>✕</button>' +
       '</div>' +
+    '</div>';
+  }).join("");
+}
+
+function renderColorRows(){
+  $("#colorRows").innerHTML = draft.colors.map(function(c, i){
+    return '<div class="colorrow" data-i="'+i+'">' +
+      '<input type="color" value="'+esc(c.hex || "#000000")+'" data-colorhex="'+i+'" />' +
+      '<input type="text" value="'+esc(c.name || "")+'" data-colorname="'+i+'" placeholder="Nom de la couleur (ex : Noir)" />' +
+      '<button class="icon-btn danger" data-colordel="'+i+'" title="Retirer">✕</button>' +
     '</div>';
   }).join("");
 }
@@ -735,6 +761,9 @@ function saveDraft(){
 
   // nettoyage final
   draft.images = draft.images.map(function(s){ return resolveImg(s); }).filter(Boolean);
+  draft.colors = (draft.colors || [])
+    .filter(function(c){ return c && c.name && c.name.trim(); })
+    .map(function(c){ return { hex: c.hex || "#000000", name: c.name.trim() }; });
   var featFlag = draft._featured;
   var oldId = editIndex !== -1 ? products[editIndex].id : null;
   delete draft._featured;
@@ -790,7 +819,7 @@ function validateAll(){
     if (!p.images || !p.images.filter(Boolean).length) problems.push(label + " : aucune photo");
     if (!p.description || !p.description.fr) problems.push(label + " : description FR manquante");
     if (!p.description || !p.description.ar) problems.push(label + " : description AR manquante");
-    if (["tshirts","shorts","joggers","jackets","caps"].indexOf(p.category) === -1)
+    if (["tshirts","shorts","joggers","jackets","caps","backpacks"].indexOf(p.category) === -1)
       problems.push(label + " : catégorie inconnue (" + p.category + ")");
   });
   return problems;
@@ -958,6 +987,24 @@ function bind(){
     if (v && draft.sizes.indexOf(v) === -1) draft.sizes.push(v);
     e.target.value = "";
     renderSizeChips();
+  });
+
+  // couleurs
+  $("#btnAddColor").addEventListener("click", function(){
+    draft.colors.push({ hex: "#000000", name: "" });
+    renderColorRows();
+  });
+  $("#colorRows").addEventListener("click", function(e){
+    var b = e.target.closest("[data-colordel]"); if (!b) return;
+    draft.colors.splice(+b.getAttribute("data-colordel"), 1);
+    renderColorRows();
+  });
+  $("#colorRows").addEventListener("input", function(e){
+    if (e.target.matches("[data-colorhex]")){
+      draft.colors[+e.target.getAttribute("data-colorhex")].hex = e.target.value;
+    } else if (e.target.matches("[data-colorname]")){
+      draft.colors[+e.target.getAttribute("data-colorname")].name = e.target.value;
+    }
   });
 
   // images

@@ -7,7 +7,7 @@
    4. I18N          — contenu FR / AR
    5. STATE
    6. HELPERS
-   7. RENDU         — nav, featured, produits, why, lookbook, instagram
+   7. RENDU         — nav, produits, why, lookbook, instagram
    8. FILTRES / RECHERCHE / TRI
    9. QUICK-VIEW
    10. PANIER
@@ -45,9 +45,6 @@ const CURRENCY = "DA";
    nouveau  products-data.js  et remplace le fichier. Aucun code à toucher ici.
    ------------------------------------------------------------------ */
 const PRODUCTS = Array.isArray(window.VYRON_PRODUCTS) ? window.VYRON_PRODUCTS : [];
-const FEATURED_IDS = (Array.isArray(window.VYRON_FEATURED) && window.VYRON_FEATURED.length)
-  ? window.VYRON_FEATURED
-  : PRODUCTS.filter(p => p.isNew).slice(0, 4).map(p => p.id);
 
 if (!PRODUCTS.length){
   console.error("[VYRON] products-data.js introuvable ou vide — la boutique n'a aucun produit à afficher. Vérifie que le fichier est bien à la racine du site.");
@@ -126,9 +123,7 @@ const I18N = {
     nav: [
       { label: "Accueil", href: "#accueil" },
       { label: "Boutique", href: "#boutique" },
-      { label: "Collections", href: "#collections" },
       { label: "Lookbook", href: "#lookbook" },
-      { label: "Manifeste", href: "#manifeste" },
       { label: "FAQ", href: "#" , info: "faq" },
       { label: "Contact", href: "#contact" }
     ],
@@ -138,8 +133,6 @@ const I18N = {
     "hero.ctaShop": "Voir la boutique",
     "hero.ctaLook": "Lookbook",
     "hero.scroll": "Scroll",
-    "featured.eyebrow": "Collection",
-    "featured.title": "Pièces phares",
     "shop.eyebrow": "Latest Drop",
     "shop.title": "La boutique",
     "shop.sortNew": "Nouveautés",
@@ -148,7 +141,7 @@ const I18N = {
     "shop.noResults": "Aucun produit ne correspond à ta recherche.",
     "shop.searchPlaceholder": "Rechercher un produit…",
     "shop.results": (n) => n + (n > 1 ? " produits" : " produit"),
-    filters: { all: "Tous", tshirts: "T-Shirts", shorts: "Shorts", joggers: "Joggers", jackets: "Vestes", caps: "Casquettes" },
+    filters: { all: "Tous", tshirts: "T-Shirts", shorts: "Shorts", joggers: "Joggers", jackets: "Vestes", caps: "Casquettes", backpacks: "Sacs & Backpacks" },
     "why.eyebrow": "Pourquoi VYRON",
     "why.title": "Ce qui nous sépare",
     why: [
@@ -159,10 +152,7 @@ const I18N = {
     ],
     "lookbook.eyebrow": "Éditorial",
     "lookbook.title": "Lookbook",
-    lookbookCaps: ["Shadow Beast — Alger", "VYRON 01 — Black Edition", "Drop 01 — Limited", "Beauty in Darkness"],
-    "manifesto.eyebrow": "Manifeste",
-    "manifesto.quote": "Nés dans l'ombre des rues. VYRON n'est pas une marque, c'est une réponse. Chaque pièce est une armure — coupée pour ceux qui avancent quand la ville dort. La beauté vit dans l'obscurité.",
-    "manifesto.sign": "— VYRON, Made From The Street",
+    lookbookCaps: ["Rue — Alger", "Cabine d'essayage", "Sur les toits", "Made From The Street"],
     "ig.eyebrow": "Communauté",
     "ig.title": "@vyron.officiel",
     "ig.follow": "Suivre sur Instagram →",
@@ -172,7 +162,7 @@ const I18N = {
     "nl.btn": "Je m'inscris",
     "nl.ok": "Bienvenue dans l'ombre. Vérifie ta boîte mail.",
     "nl.err": "Adresse e-mail invalide.",
-    "footer.shop": "Boutique", "footer.all": "Tous les produits", "footer.featured": "Pièces phares",
+    "footer.shop": "Boutique", "footer.all": "Tous les produits",
     "footer.lookbook": "Lookbook", "footer.newsletter": "Newsletter",
     "footer.help": "Aide", "footer.contact": "Contact", "footer.shipping": "Livraison",
     "footer.returns": "Retours", "footer.size": "Guide des tailles",
@@ -193,7 +183,7 @@ const I18N = {
       selectSize: "Choisis une taille", sizeErr: "Sélectionne une taille avant d'ajouter au panier.",
       qty: "Quantité", material: "Matière & entretien", sizeGuide: "Guide des tailles",
       addCart: "Ajouter au panier", wa: "Commander via WhatsApp",
-      related: "Produits similaires", from: "à partir de"
+      related: "Produits similaires", from: "à partir de", color: "Couleur"
     },
     checkout: {
       eyebrow: "Commande · Paiement à la livraison", title: "Finaliser",
@@ -228,9 +218,7 @@ const I18N = {
     nav: [
       { label: "الرئيسية", href: "#accueil" },
       { label: "المتجر", href: "#boutique" },
-      { label: "المجموعات", href: "#collections" },
       { label: "لوك بوك", href: "#lookbook" },
-      { label: "البيان", href: "#manifeste" },
       { label: "أسئلة شائعة", href: "#", info: "faq" },
       { label: "اتصل بنا", href: "#contact" }
     ],
@@ -240,8 +228,6 @@ const I18N = {
     "hero.ctaShop": "تصفّح المتجر",
     "hero.ctaLook": "لوك بوك",
     "hero.scroll": "انزل",
-    "featured.eyebrow": "المجموعة",
-    "featured.title": "القطع المميزة",
     "shop.eyebrow": "أحدث دروب",
     "shop.title": "المتجر",
     "shop.sortNew": "الجديد",
@@ -250,7 +236,7 @@ const I18N = {
     "shop.noResults": "لا يوجد منتج يطابق بحثك.",
     "shop.searchPlaceholder": "ابحث عن منتج…",
     "shop.results": (n) => n + " منتج",
-    filters: { all: "الكل", tshirts: "تيشيرت", shorts: "شورت", joggers: "جوغرز", jackets: "جواكيت", caps: "كاسكيطات" },
+    filters: { all: "الكل", tshirts: "تيشيرت", shorts: "شورت", joggers: "جوغرز", jackets: "جواكيت", caps: "كاسكيطات", backpacks: "حقائب" },
     "why.eyebrow": "لماذا فايرون",
     "why.title": "ما يميّزنا",
     why: [
@@ -261,10 +247,7 @@ const I18N = {
     ],
     "lookbook.eyebrow": "تحرير",
     "lookbook.title": "لوك بوك",
-    lookbookCaps: ["شادو بيست — الجزائر", "فايرون 01 — النسخة السوداء", "دروب 01 — محدود", "الجمال في العتمة"],
-    "manifesto.eyebrow": "البيان",
-    "manifesto.quote": "وُلدنا في ظلّ الشوارع. فايرون ليست علامة، بل ردّ. كل قطعة درعٌ — مُفصّلة لمن يتقدّمون حين تنام المدينة. الجمال يعيش في العتمة.",
-    "manifesto.sign": "— فايرون، Made From The Street",
+    lookbookCaps: ["الشارع — الجزائر", "غرفة القياس", "فوق الأسطح", "صنع من الشارع"],
     "ig.eyebrow": "المجتمع",
     "ig.title": "@vyron.officiel",
     "ig.follow": "تابعنا على إنستغرام →",
@@ -274,7 +257,7 @@ const I18N = {
     "nl.btn": "اشترك",
     "nl.ok": "أهلاً بك في العتمة. تحقّق من بريدك.",
     "nl.err": "بريد إلكتروني غير صالح.",
-    "footer.shop": "المتجر", "footer.all": "كل المنتجات", "footer.featured": "القطع المميزة",
+    "footer.shop": "المتجر", "footer.all": "كل المنتجات",
     "footer.lookbook": "لوك بوك", "footer.newsletter": "النشرة",
     "footer.help": "المساعدة", "footer.contact": "اتصل بنا", "footer.shipping": "التوصيل",
     "footer.returns": "الإرجاع", "footer.size": "دليل المقاسات",
@@ -295,7 +278,7 @@ const I18N = {
       selectSize: "اختر المقاس", sizeErr: "اختر مقاساً قبل الإضافة إلى السلة.",
       qty: "الكمية", material: "الخامة والعناية", sizeGuide: "دليل المقاسات",
       addCart: "أضف إلى السلة", wa: "اطلب عبر واتساب",
-      related: "منتجات مشابهة", from: "ابتداءً من"
+      related: "منتجات مشابهة", from: "ابتداءً من", color: "اللون"
     },
     checkout: {
       eyebrow: "الطلب · الدفع عند الاستلام", title: "إتمام الطلب",
@@ -415,29 +398,10 @@ function renderNav(){
      </div>`;
 }
 
-function renderFeatured(){
-  const wrap = $("[data-featured]");
-  const list = FEATURED_IDS.map(getProduct).filter(Boolean);
-  wrap.innerHTML = list.map((p, i) => {
-    const tag = p.isLimited
-      ? { label: "Limited", cls: "tag--limited" }
-      : (p.isNew ? { label: "New", cls: "tag--new" } : { label: "VYRON", cls: "" });
-    return `
-    <article class="feat reveal d${(i%4)+1}" data-quick="${p.id}" tabindex="0" role="button" aria-label="${escapeAttr(pName(p))}">
-      ${imgTag(p.images[0], pName(p))}
-      <div class="feat__body">
-        <span class="tag ${tag.cls}">${tag.label}</span>
-        <h3>${escapeHtml(pName(p))}</h3>
-        <span class="price">${money(p.price)}</span>
-      </div>
-    </article>`;
-  }).join("");
-}
-
 function renderFilters(){
   const wrap = $("[data-filters]");
   const f = t().filters;
-  const cats = ["all", "tshirts", "shorts", "joggers", "jackets", "caps"];
+  const cats = ["all", "tshirts", "shorts", "joggers", "jackets", "caps", "backpacks"];
   wrap.innerHTML = cats.map(c =>
     `<button class="pill${state.filter === c ? " active" : ""}" data-filter="${c}" type="button">${escapeHtml(f[c])}</button>`
   ).join("");
@@ -462,7 +426,7 @@ function renderWhy(){
 
 function renderLookbook(){
   const wrap = $("[data-lookbook]");
-  const imgs = ["assets/lookbook/look-1.jpg","assets/lookbook/look-2.jpg","assets/lookbook/look-3.jpg","assets/lookbook/look-4.jpg"];
+  const imgs = ["assets/lookbook/look-2.jpg","assets/lookbook/look-1.jpg","assets/lookbook/IMG_0630.jpeg","assets/lookbook/IMG_0746.jpeg","assets/lookbook/IMG_1362.jpeg","assets/lookbook/IMG_1545.jpeg"];
   const caps = t().lookbookCaps;
   wrap.innerHTML = imgs.map((src, i) => `
     <!-- REPLACE LOOKBOOK IMAGE HERE -->
@@ -476,17 +440,15 @@ function renderLookbook(){
 function renderInstagram(){
   const wrap = $("[data-ig]");
   // <!-- REPLACE INSTAGRAM IMAGE HERE : mets 6 images carrées dans assets/social/ -->
-  const imgs = [
-    "assets/products/shadow-beast-2.jpg",
-    "assets/products/vyron01-2.jpg",
-    "assets/lookbook/look-3.jpg",
-    "assets/products/beauty-darkness-1.jpg",
-    "assets/products/monarch-1.png",
-    "assets/products/vyron01-1.jpg"
+  // ⚙️ url : colle ici le lien du post Instagram correspondant à chaque photo (laisse "" en attendant).
+  const posts = [
+    { src: "assets/products/vyron01-2.jpg", url: "https://www.instagram.com/p/DaJLtzpDZYP/?img_index=1" },
+    { src: "assets/lookbook/image12.png", url: "https://www.instagram.com/p/DbEIYdMDceo/?img_index=1" },
+    { src: "assets/lookbook/IMG_0630.jpeg", url: "https://www.instagram.com/p/DaOSZ5Ejd2l/?img_index=1" }
   ];
-  wrap.innerHTML = imgs.map((src, i) => `
-    <a class="ig-cell" href="${SOCIAL.instagram}" target="_blank" rel="noopener" aria-label="Publication Instagram ${i+1}">
-      ${imgTag(src, "VYRON sur Instagram")}
+  wrap.innerHTML = posts.map((post, i) => `
+    <a class="ig-cell" href="${escapeAttr(post.url || SOCIAL.instagram)}" target="_blank" rel="noopener" aria-label="Publication Instagram ${i+1}">
+      ${imgTag(post.src, "VYRON sur Instagram")}
     </a>
   `).join("");
 }
@@ -581,6 +543,18 @@ function openQuickView(id){
       <div class="qv__info">
         <span class="cat">${escapeHtml(q.filters[p.category] || p.category)}</span>
         <h3>${escapeHtml(pName(p))}</h3>
+        ${(p.colors && p.colors.length) ? `
+        <div>
+          <span class="field-label">${q.qv.color} : <span data-color-current>${escapeHtml(p.colors[0].name)}</span></span>
+          <div data-color-swatches style="display:flex;gap:10px;flex-wrap:wrap">
+            ${p.colors.map((c, i) => `
+              <button type="button" data-color-swatch="${i}" data-color-name="${escapeAttr(c.name)}"
+                aria-label="${escapeAttr(c.name)}" aria-pressed="${i === 0 ? "true" : "false"}"
+                style="width:24px;height:24px;border-radius:50%;padding:0;cursor:pointer;background-color:${escapeAttr(c.hex)};box-shadow:${i === 0 ? "0 0 0 2px var(--off-white)" : "0 0 0 1px var(--line)"};"
+              ></button>
+            `).join("")}
+          </div>
+        </div>` : ""}
         <div class="qv__price">${money(p.price)}</div>
         <div class="qv__stock ${p.inStock ? "in" : "out"}">${p.inStock ? q.qv.inStock : q.qv.outStock}</div>
         <p class="qv__desc">${escapeHtml(p.description[state.lang])}</p>
@@ -1019,7 +993,6 @@ function setLang(lang){
 
   renderNav();
   renderFilters();
-  renderFeatured();
   renderWhy();
   renderLookbook();
   renderInstagram();
@@ -1101,7 +1074,7 @@ function initEvents(){
 
   // Délégation de clics globale
   document.addEventListener("click", (e) => {
-    const el = e.target.closest("[data-quick],[data-filter],[data-open-cart],[data-close-cart],[data-checkout],[data-close-checkout],[data-close-modal],[data-open-info],[data-close-info],[data-confirm-close],[data-confirm-wa],[data-submit-order],[data-wa-checkout],[data-qv-add],[data-qv-wa],[data-qv-thumb],[data-size],[data-qty],[data-accordion] button,[data-line-qty],[data-remove-line],a[href^='#']");
+    const el = e.target.closest("[data-quick],[data-filter],[data-open-cart],[data-close-cart],[data-checkout],[data-close-checkout],[data-close-modal],[data-open-info],[data-close-info],[data-confirm-close],[data-confirm-wa],[data-submit-order],[data-wa-checkout],[data-qv-add],[data-qv-wa],[data-qv-thumb],[data-color-swatch],[data-size],[data-qty],[data-accordion] button,[data-line-qty],[data-remove-line],a[href^='#']");
     if (!el) return;
 
     // Nav interne -> ferme le menu mobile
@@ -1142,6 +1115,19 @@ function initEvents(){
       const p = state.currentProduct;
       $(".qv__main img").src = p.images[i];
       $$("[data-qv-thumb]").forEach(b => b.classList.toggle("active", b === el));
+      return;
+    }
+    // Quick-view : couleur (sélection visuelle uniquement, pas de swap d'image)
+    if (el.hasAttribute("data-color-swatch")){
+      const wrap = el.closest("[data-color-swatches]");
+      $$("[data-color-swatch]", wrap).forEach(b => {
+        b.style.boxShadow = "0 0 0 1px var(--line)";
+        b.setAttribute("aria-pressed", "false");
+      });
+      el.style.boxShadow = "0 0 0 2px var(--off-white)";
+      el.setAttribute("aria-pressed", "true");
+      const label = $("[data-color-current]");
+      if (label) label.textContent = el.getAttribute("data-color-name");
       return;
     }
     // Quick-view : size
@@ -1281,14 +1267,6 @@ function initEvents(){
     msg.style.color = "#4a8f6b";
     msg.textContent = q["nl.ok"];
     input.value = "";
-  });
-
-  // Featured : clic sur carte
-  $("[data-featured]").addEventListener("keydown", (e) => {
-    if ((e.key === "Enter" || e.key === " ") && e.target.matches(".feat")){
-      e.preventDefault();
-      openQuickView(e.target.getAttribute("data-quick"));
-    }
   });
 }
 

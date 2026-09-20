@@ -21,7 +21,7 @@ window.VYRON_PRODUCTS = [
       "XL",
       "XXL"
     ],
-    "inStock": false,
+    "inStock": true,
     "isNew": true,
     "isLimited": true,
     "name": {
@@ -399,70 +399,6 @@ window.VYRON_PRODUCTS = [
     "sizeGuideNote": {
       "fr": "Taille unique — snapback réglable.",
       "ar": "مقاس واحد — سناباك قابل للضبط."
-    }
-  },
-  {
-    "id": "mmm",
-    "category": "tshirts",
-    "price": 3000,
-    "images": [
-      "assets/products/img1.jpg"
-    ],
-    "sizes": [
-      "M",
-      "S",
-      "L",
-      "XL"
-    ],
-    "inStock": true,
-    "isNew": false,
-    "isLimited": true,
-    "name": {
-      "fr": "mmm",
-      "ar": "mmm"
-    },
-    "description": {
-      "fr": "nnnn",
-      "ar": "nnnn"
-    },
-    "material": {
-      "fr": "",
-      "ar": ""
-    },
-    "sizeGuideNote": {
-      "fr": "",
-      "ar": ""
-    }
-  },
-  {
-    "id": "bbb",
-    "category": "shorts",
-    "price": 1000,
-    "images": [
-      "assets/products/img2.jpg"
-    ],
-    "sizes": [
-      "M",
-      "S"
-    ],
-    "inStock": true,
-    "isNew": true,
-    "isLimited": false,
-    "name": {
-      "fr": "bbb",
-      "ar": "bbbb"
-    },
-    "description": {
-      "fr": "gdfhx",
-      "ar": "dxffx"
-    },
-    "material": {
-      "fr": "",
-      "ar": ""
-    },
-    "sizeGuideNote": {
-      "fr": "",
-      "ar": ""
     }
   }
 ];

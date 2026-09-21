@@ -421,6 +421,39 @@ var CAT_LABELS = { tshirts:"T-Shirts", shorts:"Shorts", joggers:"Joggers", jacke
 var SIZE_PRESET = ["S","M","L","XL","XXL","Unique"];
 var IMG_DIR = "assets/products/";
 
+/* Chemins possibles vers les images : fonctionne même si admin.html
+   est placé dans un sous-dossier du projet VYRON. */
+var IMG_MAX_PARENT_LEVELS = 8;
+function imageCandidates(v){
+  v = (v||"").trim();
+  if (!v) return [];
+  if (/^(https?:)?\/\//i.test(v) || /^data:/i.test(v)) return [v];
+  if (v.charAt(0) === "/") return [v];
+  if (v.indexOf("assets/") === 0) v = v.slice("assets/".length);
+  else if (v.indexOf(IMG_DIR) === 0) v = v.slice(IMG_DIR.length);
+  var out = [];
+  for (var i=0; i<=IMG_MAX_PARENT_LEVELS; i++){
+    var prefix = "";
+    for (var j=0; j<i; j++) prefix += "../";
+    out.push(prefix + IMG_DIR + v);
+  }
+  return out;
+}
+function attachImageFallback(img, value, onFail){
+  var candidates = imageCandidates(value);
+  var n = 0;
+  function tryNext(){
+    if (n >= candidates.length){
+      if (onFail) onFail();
+      return;
+    }
+    img.onerror = tryNext;
+    img.src = candidates[n++];
+  }
+  if (candidates.length) tryNext();
+  else if (onFail) onFail();
+}
+
 /* ============ ÉTAT ============ */
 var products = [];
 var featured = [];
@@ -444,11 +477,8 @@ function money(n){ return new Intl.NumberFormat("fr-DZ").format(n||0) + " DA"; }
 
 /* Résout une valeur d'image (nom de fichier -> chemin assets/, sinon tel quel) */
 function resolveImg(v){
-  v = (v||"").trim();
-  if (!v) return "";
-  if (/^(https?:)?\/\//i.test(v) || /^data:/i.test(v) || v.charAt(0) === "/") return v;
-  if (v.indexOf("assets/") === 0) return v;
-  return IMG_DIR + v;
+  var candidates = imageCandidates(v);
+  return candidates.length ? candidates[0] : "";
 }
 /* Forme courte pour l'affichage dans le champ (retire assets/products/) */
 function shortImg(v){
@@ -554,7 +584,7 @@ function renderList(){
     var p = o.p, idx = o.idx;
     var img = p.images && p.images[0] ? resolveImg(p.images[0]) : "";
     var thumb = '<div class="prow__thumb">' +
-      (img ? '<img src="'+esc(img)+'" alt="" onerror="this.remove()">' : '') +
+      (img ? '<img src="'+esc(img)+'" alt="" data-img-fallback="'+esc(p.images[0])+'">' : '') +
     '</div>';
     var tags = "";
     if (p.isNew) tags += '<span class="tagpill tagpill--new">New</span>';
@@ -580,6 +610,9 @@ function renderList(){
       '</div>' +
     '</div>';
   }).join("");
+  $$("img[data-img-fallback]", list).forEach(function(im){
+    attachImageFallback(im, im.getAttribute("data-img-fallback"));
+  });
 }
 
 function esc(s){
@@ -662,7 +695,7 @@ function renderImgRows(){
   $("#imgRows").innerHTML = draft.images.map(function(v, i){
     var resolved = resolveImg(v);
     var prev = '<div class="imgrow__prev" data-ph="'+(resolved?"introuvable":"vide")+'">' +
-      (resolved ? '<img src="'+esc(resolved)+'" alt="" onerror="this.remove()">' : '') +
+      (resolved ? '<img src="'+esc(resolved)+'" alt="" data-img-fallback="'+esc(v)+'">' : '') +
     '</div>';
     return '<div class="imgrow" data-i="'+i+'">' +
       prev +
@@ -674,6 +707,9 @@ function renderImgRows(){
       '</div>' +
     '</div>';
   }).join("");
+  $$("img[data-img-fallback]", $("#imgRows")).forEach(function(im){
+    attachImageFallback(im, im.getAttribute("data-img-fallback"));
+  });
 }
 
 function renderColorRows(){
@@ -700,8 +736,7 @@ function updatePreview(){
   var el = $("#pcardImg");
   if (img){
     el.style.display = "block";
-    el.onerror = function(){ el.style.display = "none"; };
-    el.src = img;
+    attachImageFallback(el, draft.images[0], function(){ el.style.display = "none"; });
   } else {
     el.removeAttribute("src"); el.style.display = "none";
   }
@@ -1039,9 +1074,9 @@ function bind(){
     box.innerHTML = "";
     if (resolved){
       var im = document.createElement("img");
-      im.onerror = function(){ im.remove(); };
-      im.src = resolved;
+      im.alt = "";
       box.appendChild(im);
+      attachImageFallback(im, draft.images[i], function(){ im.remove(); });
     }
     if (i === 0) updatePreview();
   });

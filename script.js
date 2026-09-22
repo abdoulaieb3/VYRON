@@ -174,7 +174,7 @@ const I18N = {
     "cart.checkout": "Passer à la commande",
     "cart.empty": "Ton panier est vide",
     "cart.emptyCta": "Découvrir la boutique",
-    "cart.size": "Taille", "cart.qty": "Qté", "cart.remove": "Retirer",
+    "cart.size": "Taille", "cart.color": "Couleur", "cart.qty": "Qté", "cart.remove": "Retirer",
     "toast.added": "Ajouté au panier",
     "toast.removed": "Retiré du panier",
     "toast.orderSent": "Commande envoyée",
@@ -269,7 +269,7 @@ const I18N = {
     "cart.checkout": "إتمام الطلب",
     "cart.empty": "سلّتك فارغة",
     "cart.emptyCta": "اكتشف المتجر",
-    "cart.size": "المقاس", "cart.qty": "الكمية", "cart.remove": "حذف",
+    "cart.size": "المقاس", "cart.color": "اللون", "cart.qty": "الكمية", "cart.remove": "حذف",
     "toast.added": "أُضيف إلى السلة",
     "toast.removed": "حُذف من السلة",
     "toast.orderSent": "تم إرسال الطلب",
@@ -320,7 +320,7 @@ const LS_LANG = "vyron_lang_v1";
 
 const state = {
   lang: localStorage.getItem(LS_LANG) || "fr",
-  cart: loadJSON(LS_CART, []),          // [{id, size, qty}]
+  cart: loadJSON(LS_CART, []),          // [{id, size, color, qty}]
   filter: "all",
   search: "",
   sort: "new",
@@ -328,6 +328,7 @@ const state = {
   deliveryType: "home",
   currentProduct: null,
   currentSize: null,
+  currentColor: null,
   currentQty: 1
 };
 
@@ -521,6 +522,7 @@ function openQuickView(id){
   if (!p) return;
   state.currentProduct = p;
   state.currentSize = null;
+  state.currentColor = (p.colors && p.colors.length) ? p.colors[0].name : null;
   state.currentQty = 1;
 
   const q = t();
@@ -638,10 +640,10 @@ function cartTotal(){
   return cartSubtotal() + (d || 0);
 }
 
-function addToCart(id, size, qty){
-  const line = state.cart.find(l => l.id === id && l.size === size);
+function addToCart(id, size, color, qty){
+  const line = state.cart.find(l => l.id === id && l.size === size && (l.color || "") === (color || ""));
   if (line) line.qty += qty;
-  else state.cart.push({ id, size, qty });
+  else state.cart.push({ id, size, color: color || "", qty });
   persistCart();
   toast(t()["toast.added"]);
 }
@@ -690,7 +692,7 @@ function renderCart(){
         <img class="cart-line__img" src="${p.images[0]}" alt="${escapeAttr(pName(p))}" onerror="this.src='${PLACEHOLDER_IMG}'">
         <div class="cart-line__info">
           <span class="n">${escapeHtml(pName(p))}</span>
-          <span class="meta">${q["cart.size"]}: ${escapeHtml(l.size)} · ${money(p.price)}</span>
+          <span class="meta">${l.color ? `${q["cart.color"]}: ${escapeHtml(l.color)} · ` : ""}${q["cart.size"]}: ${escapeHtml(l.size)} · ${money(p.price)}</span>
           <div class="cart-line__ctrl">
             <div class="mini-qty">
               <button type="button" data-line-qty="${idx}" data-delta="-1" aria-label="−">−</button>
@@ -780,8 +782,9 @@ function renderCheckoutSummary(){
   linesWrap.innerHTML = state.cart.map(l => {
     const p = getProduct(l.id);
     if (!p) return "";
+    const variant = [l.color, l.size].filter(Boolean).join(" / ");
     return `<div class="os-line">
-      <span>${escapeHtml(pName(p))} <span class="q">(${escapeHtml(l.size)}) ×${l.qty}</span></span>
+      <span>${escapeHtml(pName(p))} <span class="q">(${escapeHtml(variant)}) ×${l.qty}</span></span>
       <span>${money(p.price * l.qty)}</span>
     </div>`;
   }).join("");
@@ -824,7 +827,7 @@ function collectOrder(){
   const d = deliveryFee();
   const items = state.cart.map(l => {
     const p = getProduct(l.id);
-    return { id: l.id, name: p ? p.name.fr : l.id, size: l.size, qty: l.qty, price: p ? p.price : 0 };
+    return { id: l.id, name: p ? p.name.fr : l.id, size: l.size, color: l.color || "", qty: l.qty, price: p ? p.price : 0 };
   });
   return {
     orderNumber: "VYR-" + Date.now().toString(36).toUpperCase() + "-" + Math.floor(Math.random()*900+100),
@@ -842,7 +845,10 @@ function collectOrder(){
 }
 
 function itemsSummaryString(order){
-  return order.items.map(it => `${it.name} (${it.size}) x${it.qty}`).join(", ");
+  return order.items.map(it => {
+    const variant = [it.color, it.size].filter(Boolean).join(" / ");
+    return `${it.name} (${variant}) x${it.qty}`;
+  }).join(", ");
 }
 
 // Envoi vers Google Sheet — mode no-cors, on ne bloque pas l'UI
@@ -912,7 +918,8 @@ function buildWhatsAppMessage(ref){
   lines.push("*Articles :*");
   state.cart.forEach(l => {
     const p = getProduct(l.id);
-    if (p) lines.push("• " + p.name.fr + " (" + l.size + ") x" + l.qty + " — " + money(p.price * l.qty));
+    const variant = [l.color, l.size].filter(Boolean).join(" / ");
+    if (p) lines.push("• " + p.name.fr + " (" + variant + ") x" + l.qty + " — " + money(p.price * l.qty));
   });
   lines.push("");
   lines.push("Sous-total : " + money(cartSubtotal()));
@@ -945,7 +952,10 @@ function showConfirmation(order){
     <div class="ordernum">${order.orderNumber}</div>
     <p class="cmsg">${escapeHtml(q.confirm.msg(order.customer.name, order.orderNumber, order.customer.phone))}</p>
     <div class="confirm-summary">
-      ${order.items.map(it => `<div class="cs-line"><span>${escapeHtml(it.name)} (${escapeHtml(it.size)}) ×${it.qty}</span><span>${money(it.price*it.qty)}</span></div>`).join("")}
+      ${order.items.map(it => {
+        const variant = [it.color, it.size].filter(Boolean).join(" / ");
+        return `<div class="cs-line"><span>${escapeHtml(it.name)} (${escapeHtml(variant)}) ×${it.qty}</span><span>${money(it.price*it.qty)}</span></div>`;
+      }).join("")}
       <div class="cs-line"><span>${q.confirm.delivery} — ${escapeHtml(order.deliveryType)}</span><span>${money(order.deliveryFee)}</span></div>
       <div class="cs-line tot"><span>${q.confirm.total}</span><span>${money(order.total)}</span></div>
     </div>
@@ -1117,7 +1127,7 @@ function initEvents(){
       $$("[data-qv-thumb]").forEach(b => b.classList.toggle("active", b === el));
       return;
     }
-    // Quick-view : couleur (sélection visuelle uniquement, pas de swap d'image)
+    // Quick-view : couleur (mémorisée dans state.currentColor, envoyée au panier + Sheet)
     if (el.hasAttribute("data-color-swatch")){
       const wrap = el.closest("[data-color-swatches]");
       $$("[data-color-swatch]", wrap).forEach(b => {
@@ -1126,8 +1136,9 @@ function initEvents(){
       });
       el.style.boxShadow = "0 0 0 2px var(--off-white)";
       el.setAttribute("aria-pressed", "true");
+      state.currentColor = el.getAttribute("data-color-name");
       const label = $("[data-color-current]");
-      if (label) label.textContent = el.getAttribute("data-color-name");
+      if (label) label.textContent = state.currentColor;
       return;
     }
     // Quick-view : size
@@ -1155,7 +1166,7 @@ function initEvents(){
         $("[data-size-error]").classList.add("show");
         return;
       }
-      addToCart(state.currentProduct.id, state.currentSize, state.currentQty);
+      addToCart(state.currentProduct.id, state.currentSize, state.currentColor, state.currentQty);
       closeQuickView();
       openCart();
       return;
@@ -1163,7 +1174,7 @@ function initEvents(){
     // Quick-view : WhatsApp (ajoute d'abord au panier si taille choisie)
     if (el.hasAttribute("data-qv-wa")){
       if (state.currentSize){
-        addToCart(state.currentProduct.id, state.currentSize, state.currentQty);
+        addToCart(state.currentProduct.id, state.currentSize, state.currentColor, state.currentQty);
       }
       openWhatsApp("");
       return;

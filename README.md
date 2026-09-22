@@ -91,6 +91,10 @@ Si tu préfères, `products-data.js` est juste une liste JavaScript. Un produit 
   price: 3800,                   // PRIX EN DA (nombre)
   images: ["assets/products/shadow-beast-1.jpg"],
   sizes: ["S", "M", "L", "XL", "XXL"],
+  colors: [                      // optionnel — si absent ou vide, pas de sélecteur couleur
+    { name: "Noir", hex: "#111111" },
+    { name: "Kaki", hex: "#6b6a4f" }
+  ],
   inStock: true,                 // false → "Rupture de stock", bouton désactivé
   isNew: true,                   // badge "New"
   isLimited: true,               // badge "Limited"
@@ -160,6 +164,9 @@ const SHEET_ENDPOINT = "https://script.google.com/macros/s/AKfy..../exec";
 
 Colonnes du sheet :
 `N° Commande | Horodatage | Nom | Téléphone | Wilaya | Commune | Adresse | Type Livraison | Produits (résumé) | Sous-total | Frais Livraison | Total`
+
+> Si un produit a des `colors` définies, la couleur choisie apparaît directement dans
+> « Produits (résumé) », entre parenthèses avec la taille — ex. `T-Shirt Shadow Beast (Noir / M) x2`.
 
 Les inscriptions **newsletter** arrivent dans un 2e onglet **Newsletter VYRON**
 (`Horodatage | Email`).

@@ -95,7 +95,8 @@ function appendNewsletter_(data) {
 function itemsSummary_(items) {
   if (!items || !items.length) return "";
   return items.map(function (it) {
-    return (it.name || it.id || "?") + " (" + (it.size || "-") + ") x" + (it.qty || 1);
+    var variant = [it.color, it.size].filter(function (v) { return v; }).join(" / ") || "-";
+    return (it.name || it.id || "?") + " (" + variant + ") x" + (it.qty || 1);
   }).join(", ");
 }
 

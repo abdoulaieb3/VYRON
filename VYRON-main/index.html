@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#0a0a0a" />
+<title>VYRON — Made From The Street</title>
+<meta name="description" content="VYRON — Streetwear premium algérien. Beauty in Darkness. Séries limitées, qualité premium, livraison partout en Algérie." />
+
+<!-- Fonts : Cinzel Decorative = logo / grands titres uniquement | Inter = tout le reste -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@500;600;700&family=Inter:wght@300;400;500;600;700&family=Noto+Kufi+Arabic:wght@400;600;700&display=swap" rel="stylesheet" />
+
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<!-- ============ HEADER ============ -->
+<header class="header" id="top">
+  <div class="wrap">
+    <a href="#top" class="logo" aria-label="VYRON — accueil">VYRON</a>
+
+    <nav class="nav" aria-label="Navigation principale" data-nav></nav>
+
+    <div class="header-actions">
+      <div class="lang-toggle" role="group" aria-label="Choix de la langue">
+        <button data-lang="fr" class="active" type="button">FR</button>
+        <button data-lang="ar" type="button">AR</button>
+      </div>
+      <button class="icon-btn" data-open-cart type="button" aria-label="Ouvrir le panier">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M6 8h12l-1 12H7L6 8Z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>
+        <span class="cart-badge" data-cart-count>0</span>
+      </button>
+      <button class="hamburger" data-toggle-menu type="button" aria-label="Ouvrir le menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ============ MENU MOBILE ============ -->
+<div class="mobile-menu" id="mobileMenu" data-mobile-nav></div>
+
+<!-- ============ HERO ============ -->
+<section class="hero" id="accueil">
+  <div class="hero__bg" data-parallax></div>
+  <div class="wrap hero__content">
+    <p class="eyebrow" data-i18n="hero.eyebrow">Streetwear · Algérie · Séries limitées</p>
+    <h1 class="display">VYRON</h1>
+    <p class="tagline" data-i18n="hero.tagline">Made From The Street</p>
+    <p class="subline" data-i18n="hero.subline">Beauty in Darkness</p>
+    <div class="hero-cta">
+      <a href="#boutique" class="btn btn--solid" data-i18n="hero.ctaShop">Voir la boutique</a>
+      <a href="#lookbook" class="btn btn--ghost" data-i18n="hero.ctaLook">Lookbook</a>
+    </div>
+  </div>
+  <div class="scroll-hint" aria-hidden="true"><span data-i18n="hero.scroll">Scroll</span></div>
+</section>
+
+<!-- ============ LATEST DROP / BOUTIQUE ============ -->
+<section class="section section--tight" id="boutique">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <p class="eyebrow" data-i18n="shop.eyebrow">Latest Drop</p>
+      <h2 data-i18n="shop.title">La boutique</h2>
+    </div>
+
+    <div class="shop-controls reveal">
+      <div class="search-box">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input type="search" data-search placeholder="Rechercher un produit…" aria-label="Rechercher un produit" />
+      </div>
+      <select class="sort-select" data-sort aria-label="Trier les produits">
+        <option value="new" data-i18n="shop.sortNew">Nouveautés</option>
+        <option value="price-asc" data-i18n="shop.sortAsc">Prix croissant</option>
+        <option value="price-desc" data-i18n="shop.sortDesc">Prix décroissant</option>
+      </select>
+    </div>
+
+    <div class="filter-pills reveal" data-filters></div>
+    <p class="results-count" data-results-count></p>
+    <div class="product-grid" data-product-grid></div>
+    <p class="no-results" data-no-results hidden data-i18n="shop.noResults">Aucun produit ne correspond à ta recherche.</p>
+  </div>
+</section>
+
+<!-- ============ WHY VYRON ============ -->
+<section class="section" id="why">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <p class="eyebrow" data-i18n="why.eyebrow">Pourquoi VYRON</p>
+      <h2 data-i18n="why.title">Ce qui nous sépare</h2>
+    </div>
+    <div class="why-grid" data-why></div>
+  </div>
+</section>
+
+<!-- ============ LOOKBOOK ============ -->
+<section class="section section--tight" id="lookbook">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <p class="eyebrow" data-i18n="lookbook.eyebrow">Éditorial</p>
+      <h2 data-i18n="lookbook.title">Lookbook</h2>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="lookbook-scroll reveal" data-lookbook>
+      
+    </div>
+  </div>
+</section>
+
+<!-- ============ INSTAGRAM / SOCIAL ============ -->
+<section class="section section--tight" id="social">
+  <div class="wrap">
+    <div class="ig-head reveal">
+      <div>
+        <p class="eyebrow" data-i18n="ig.eyebrow">Communauté</p>
+        <h2 style="margin-top:14px" data-i18n="ig.title">@vyron.officiel</h2>
+      </div>
+      <a href="#" data-social="instagram" target="_blank" rel="noopener" data-i18n="ig.follow">Suivre sur Instagram →</a>
+    </div>
+    <div class="ig-grid reveal" data-ig>
+   
+    </div>
+  </div>
+</section>
+
+
+
+<!-- ============ FOOTER ============ -->
+<footer class="footer" id="contact">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <a href="#top" class="logo">VYRON</a>
+        <p class="fmot">Made From The Street</p>
+        <div class="footer-social">
+          <a href="#" data-social="instagram" target="_blank" rel="noopener" aria-label="Instagram">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+          </a>
+          <a href="#" data-social="tiktok" target="_blank" rel="noopener" aria-label="TikTok">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16 3c.3 2.3 1.9 4 4 4.2v3c-1.5 0-2.9-.4-4-1.1V15a6 6 0 1 1-6-6c.3 0 .7 0 1 .1v3.1a3 3 0 1 0 2 2.8V3h3Z"/></svg>
+          </a>
+          <a href="#" data-social="whatsapp" target="_blank" rel="noopener" aria-label="WhatsApp">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15L2 22l5.2-1.4A10 10 0 1 0 12 2Zm5.3 14.1c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .1-1.7-.1-.4-.1-1-.3-1.6-.6-2.9-1.3-4.8-4.2-4.9-4.4-.2-.2-1.2-1.6-1.2-3s.7-2.1 1-2.4c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.4 0 .5l-.4.5-.3.3c-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.4 2.4 1.5.3.1.5.1.6-.1l.7-.9c.2-.3.4-.2.7-.1l2 .9c.3.1.5.2.5.4.1.1.1.7-.1 1.2Z"/></svg>
+          </a>
+        </div>
+      </div>
+      <div>
+        <h4 data-i18n="footer.shop">Boutique</h4>
+        <ul>
+          <li><a href="#boutique" data-i18n="footer.all">Tous les produits</a></li>
+          <li><a href="#lookbook" data-i18n="footer.lookbook">Lookbook</a></li>
+          <li><a href="#newsletter" data-i18n="footer.newsletter">Newsletter</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 data-i18n="footer.help">Aide</h4>
+        <ul>
+          <li><a href="#" data-open-info="contact" data-i18n="footer.contact">Contact</a></li>
+          <li><a href="#" data-open-info="shipping" data-i18n="footer.shipping">Livraison</a></li>
+          <li><a href="#" data-open-info="returns" data-i18n="footer.returns">Retours</a></li>
+          <li><a href="#" data-open-info="size" data-i18n="footer.size">Guide des tailles</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 data-i18n="footer.follow">Suivre</h4>
+        <ul>
+          <li><a href="#" data-social="instagram" target="_blank" rel="noopener">Instagram</a></li>
+          <li><a href="#" data-social="tiktok" target="_blank" rel="noopener">TikTok</a></li>
+          <li><a href="#" data-social="whatsapp" target="_blank" rel="noopener">WhatsApp</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 VYRON</span>
+      <span data-i18n="footer.rights">Tous droits réservés · Alger, Algérie</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ============ OVERLAYS / PANELS ============ -->
+<div class="overlay" data-overlay></div>
+
+<!-- PANIER -->
+<aside class="cart-panel" data-cart-panel aria-label="Panier" aria-hidden="true">
+  <div class="cart-head">
+    <h3 data-i18n="cart.title">Panier</h3>
+    <button class="close-x" data-close-cart type="button" aria-label="Fermer le panier">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+    </button>
+  </div>
+  <div class="cart-body" data-cart-body></div>
+  <div class="cart-foot" data-cart-foot hidden>
+    <div class="cart-row"><span data-i18n="cart.subtotal">Sous-total</span><span data-cart-subtotal>0 DA</span></div>
+    <div class="cart-row"><span data-i18n="cart.delivery">Livraison</span><span data-cart-delivery data-i18n="cart.tbd">à calculer</span></div>
+    <div class="cart-row total"><span data-i18n="cart.total">Total</span><span data-cart-total>0 DA</span></div>
+    <p class="cart-note" data-i18n="cart.note">Frais de livraison calculés au moment du choix de la wilaya.</p>
+    <button class="btn btn--solid btn--full" data-checkout type="button" data-i18n="cart.checkout">Passer à la commande</button>
+  </div>
+</aside>
+
+<!-- QUICK-VIEW -->
+<div class="modal" data-modal aria-hidden="true" role="dialog" aria-modal="true" aria-label="Détail produit">
+  <div class="modal__panel" data-modal-panel></div>
+</div>
+
+<!-- CHECKOUT -->
+<div class="checkout-panel" data-checkout-panel aria-hidden="true" role="dialog" aria-modal="true" aria-label="Commande">
+  <div class="checkout-inner">
+    <div class="checkout-top">
+      <span class="logo">VYRON</span>
+      <button class="close-x icon-btn" data-close-checkout type="button" aria-label="Fermer la commande">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+      </button>
+    </div>
+    <div class="section-head">
+      <p class="eyebrow" data-i18n="checkout.eyebrow">Commande · Paiement à la livraison</p>
+      <h2 style="margin-top:14px" data-i18n="checkout.title">Finaliser</h2>
+    </div>
+    <div class="checkout-grid">
+      <form class="checkout-form" data-checkout-form novalidate>
+        <div class="form-section">
+          <h3 data-i18n="checkout.contact">Tes coordonnées</h3>
+          <div class="form-grid">
+            <div class="field full">
+              <label for="ck-name" data-i18n="checkout.name">Nom complet</label>
+              <input type="text" id="ck-name" name="name" autocomplete="name" required />
+              <span class="err" data-i18n="checkout.errName">Merci d'indiquer ton nom.</span>
+            </div>
+            <div class="field full">
+              <label for="ck-phone" data-i18n="checkout.phone">Numéro de téléphone</label>
+              <input type="tel" id="ck-phone" name="phone" inputmode="numeric" placeholder="0X XX XX XX XX" autocomplete="tel" required />
+              <span class="err" data-i18n="checkout.errPhone">Numéro algérien invalide (ex : 0555 12 34 56).</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section" style="margin-top:30px">
+          <h3 data-i18n="checkout.address">Adresse de livraison</h3>
+          <div class="form-grid">
+            <div class="field">
+              <label for="ck-wilaya" data-i18n="checkout.wilaya">Wilaya</label>
+              <select id="ck-wilaya" name="wilaya" required data-wilaya-select>
+                <option value="" data-i18n="checkout.wilayaPlaceholder">Choisir…</option>
+              </select>
+              <span class="err" data-i18n="checkout.errWilaya">Choisis ta wilaya.</span>
+            </div>
+            <div class="field">
+              <label for="ck-commune" data-i18n="checkout.commune">Commune / Ville</label>
+              <input type="text" id="ck-commune" name="commune" required />
+              <span class="err" data-i18n="checkout.errCommune">Indique ta commune.</span>
+            </div>
+            <div class="field full">
+              <label for="ck-addr" data-i18n="checkout.fullAddress">Adresse complète</label>
+              <textarea id="ck-addr" name="address" required placeholder="Rue, numéro, cité, point de repère…"></textarea>
+              <span class="err" data-i18n="checkout.errAddress">Adresse trop courte.</span>
+            </div>
+          </div>
+
+          <span class="field-label" style="margin-top:6px" data-i18n="checkout.deliveryType">Type de livraison</span>
+          <div class="delivery-opts" data-delivery-opts>
+            <label class="sel">
+              <input type="radio" name="deliveryType" value="home" checked />
+              <span class="do-t" data-i18n="checkout.home">Livraison à domicile</span>
+              <span class="do-p" data-delivery-home-price>—</span>
+            </label>
+            <label>
+              <input type="radio" name="deliveryType" value="desk" />
+              <span class="do-t" data-i18n="checkout.desk">Stop Desk / Point relais</span>
+              <span class="do-p" data-delivery-desk-price>—</span>
+            </label>
+          </div>
+        </div>
+      </form>
+
+      <div class="order-summary">
+        <h3 data-i18n="checkout.summary">Récapitulatif</h3>
+        <div data-checkout-lines></div>
+        <div class="os-tot"><span data-i18n="cart.subtotal">Sous-total</span><span data-ck-subtotal>0 DA</span></div>
+        <div class="os-tot"><span data-i18n="cart.delivery">Livraison</span><span data-ck-delivery data-i18n="cart.tbd">à calculer</span></div>
+        <div class="os-tot grand"><span data-i18n="cart.total">Total</span><span data-ck-total>0 DA</span></div>
+        <div class="checkout-actions">
+          <button class="btn btn--solid btn--full" data-submit-order type="button" data-i18n="checkout.confirm">Confirmer la commande</button>
+          <button class="btn btn--wa btn--full" data-wa-checkout type="button" data-i18n="checkout.whatsapp">Commander via WhatsApp</button>
+        </div>
+        <p class="cod-note" data-i18n="checkout.codNote">Paiement à la livraison (Cash on Delivery). Notre équipe te contacte pour confirmer avant expédition.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIRMATION -->
+<div class="confirm-modal" data-confirm aria-hidden="true" role="dialog" aria-modal="true" aria-label="Commande confirmée">
+  <div class="confirm-panel" data-confirm-panel></div>
+</div>
+
+<!-- INFO MODAL (contact / livraison / retours / tailles) -->
+<div class="modal" data-info-modal aria-hidden="true" role="dialog" aria-modal="true">
+  <div class="modal__panel" style="max-width:560px">
+    <button class="modal__close" data-close-info type="button" aria-label="Fermer">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+    </button>
+    <div style="padding:clamp(28px,5vw,44px)" data-info-body></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" data-toast role="status" aria-live="polite"></div>
+
+<!-- Catalogue produits (généré par admin.html) — doit être chargé AVANT script.js -->
+<script src="products-data.js" defer></script>
+<script src="script.js" defer></script>
+</body>
+</html>

@@ -1,10 +1,6 @@
 /* =====================================================================
    VYRON — CATALOGUE PRODUITS
-<<<<<<< HEAD
-   Généré par admin.html le 21/09/2026 02:31:39
-=======
-   Généré par admin.html le 26/09/2026 18:01:03
->>>>>>> 241d3b9 ( new photos)
+   Généré par admin.html le 26/09/2026 18:43:37
    Pour publier : place ce fichier à la racine du site (à côté de
    index.html), puis ré-uploade le dossier chez ton hébergeur.
    ===================================================================== */
@@ -12,11 +8,7 @@
 window.VYRON_PRODUCTS = [
   {
     "id": "vyron-zip-up",
-<<<<<<< HEAD
-    "category": "tshirts",
-=======
     "category": "jackets",
->>>>>>> 241d3b9 ( new photos)
     "price": 3000,
     "images": [
       "assets/products/photos-1.jpg",
@@ -57,8 +49,6 @@ window.VYRON_PRODUCTS = [
       "fr": "Cette veste adopte une coupe naturellement décontractée et légèrement oversize (Relaxed / Oversized Fit). Voici nos recommandations pour bien choisir votre taille :   Taille S : Recommandée pour les silhouettes minces ou si vous recherchez un ajustement plus près du corps (Regular Fit) sans trop d'ampleur.Taille M : La taille standard pour une coupe confortable. Idéale pour un usage quotidien avec assez d'espace pour porter un t-shirt en dessous.Taille L : Parfaite si vous aimez l'effet streetwear ample (oversized) tout en conservant une bonne longueur aux bras et à la taille.Taille XL : Adaptée aux carrures plus larges ou à ceux qui préfèrent une coupe très loose et spacieuse.",
       "ar": "السترة مصممة بقَصّة مريحة وفضفاضة قليلاً (Relaxed / Oversized Fit). فيما يلي إرشادات اختيار المقاس المناسب بناءً على طريقة الارتداء المفضلة:\n\nالمقاس Small (S): مناسب للأشخاص أصحاب البنية النحيفة، أو لمن يبحث عن إطلالة محدودة وأكثر ملاءمة للجسم (Regular Fit) دون اتساع زائد.\n\nالمقاس Medium (M): المقاس القياسي المريح للأجسام المتوسطة، يمنحك مظهرًا عصريًا مع حرية كاملة في الحركة وإمكانية ارتداء قميص داخلي مريح.\n\nالمقاس Large (L): ممتاز للأجسام الرياضية أو لمن يفضل إطلالة \"الشارع\" الفضفاضة (Oversized Look) المميزة لهذا النوع من السترات.\n\nالمقاس X-Large (XL): موجه للأجسام الضخمة أو لمن يحب السترات الفضفاضة جدًا وطويلة الأكمام التي توفر أقصى درجات الراحة."
     }
-<<<<<<< HEAD
-=======
   },
   {
     "id": "baggy-jogger",
@@ -149,7 +139,6 @@ window.VYRON_PRODUCTS = [
       "fr": "Coupe oversize : nous recommandons de choisir votre taille habituelle pour un rendu oversize.\nPour une coupe plus ajustée, choisissez une taille en dessous.",
       "ar": "القصة Oversize: ننصح باختيار مقاسك المعتاد للحصول على مظهر واسع.\nللحصول على قصة أكثر قربًا للجسم، اختر مقاسًا أصغر بدرجة واحدة."
     }
->>>>>>> 241d3b9 ( new photos)
   }
 ];
 

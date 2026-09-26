@@ -1,6 +1,6 @@
 /* =====================================================================
    VYRON — CATALOGUE PRODUITS
-   Généré par admin.html le 26/09/2026 18:43:37
+   Généré par admin.html le 26/09/2026 19:09:34
    Pour publier : place ce fichier à la racine du site (à côté de
    index.html), puis ré-uploade le dossier chez ton hébergeur.
    ===================================================================== */
@@ -86,7 +86,7 @@ window.VYRON_PRODUCTS = [
       "ar": "بنطال جوجر بقصّة باغي واسعة، مصمم ليمنحك إطلالة عصرية مستوحاة من أسلوب الشارع. يجمع بين الراحة، حرية الحركة، والمظهر الأنيق، مما يجعله مناسبًا للإطلالات اليومية."
     },
     "material": {
-      "fr": "onfectionné dans une matière douce et résistante, agréable à porter au quotidien.\nEntretien : lavage en machine à basse température. Éviter le blanchiment et le séchage à haute température. Repassage à basse température si nécessaire.",
+      "fr": "confectionné dans une matière douce et résistante, agréable à porter au quotidien.\nEntretien : lavage en machine à basse température. Éviter le blanchiment et le séchage à haute température. Repassage à basse température si nécessaire.",
       "ar": "مصنوع من خامة ناعمة ومريحة ومناسبة للاستخدام اليومي.\nيُنصح بالغسل في درجة حرارة منخفضة، وتجنب استخدام المبيّضات والتجفيف بدرجات حرارة مرتفعة."
     },
     "sizeGuideNote": {

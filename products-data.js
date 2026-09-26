@@ -1,6 +1,6 @@
 /* =====================================================================
    VYRON — CATALOGUE PRODUITS
-   Généré par admin.html le 23/09/2026 15:43:26
+   Généré par admin.html le 26/09/2026 19:09:34
    Pour publier : place ce fichier à la racine du site (à côté de
    index.html), puis ré-uploade le dossier chez ton hébergeur.
    ===================================================================== */
@@ -86,12 +86,58 @@ window.VYRON_PRODUCTS = [
       "ar": "بنطال جوجر بقصّة باغي واسعة، مصمم ليمنحك إطلالة عصرية مستوحاة من أسلوب الشارع. يجمع بين الراحة، حرية الحركة، والمظهر الأنيق، مما يجعله مناسبًا للإطلالات اليومية."
     },
     "material": {
-      "fr": "onfectionné dans une matière douce et résistante, agréable à porter au quotidien.\nEntretien : lavage en machine à basse température. Éviter le blanchiment et le séchage à haute température. Repassage à basse température si nécessaire.",
+      "fr": "confectionné dans une matière douce et résistante, agréable à porter au quotidien.\nEntretien : lavage en machine à basse température. Éviter le blanchiment et le séchage à haute température. Repassage à basse température si nécessaire.",
       "ar": "مصنوع من خامة ناعمة ومريحة ومناسبة للاستخدام اليومي.\nيُنصح بالغسل في درجة حرارة منخفضة، وتجنب استخدام المبيّضات والتجفيف بدرجات حرارة مرتفعة."
     },
     "sizeGuideNote": {
       "fr": "Coupe baggy et oversize. Pour un rendu confortable et ample, choisissez votre taille habituelle.",
       "ar": "يتميز البنطال بقصّة واسعة وفضفاضة. اختر مقاسك المعتاد للحصول على إطلالة باغي مريحة.\n| المقاس | محيط الخصر | طول البنطال |\n| ------ | ---------: | ----------: |\n| **S**  |   70–76 سم |      102 سم |\n| **M**  |   76–82 سم |      104 سم |\n| **L**  |   82–88 سم |      106 سم |\n| **XL** |   88–94 سم |      108 سم |"
+    }
+  },
+  {
+    "id": "t-shirt-shadow-monarch",
+    "category": "tshirts",
+    "price": 3200,
+    "images": [
+      "assets/products/tshirt1.jpg",
+      "assets/products/tshirt2.jpg",
+      "assets/products/tshirt3.jpg",
+      "assets/products/tshirt4.jpg"
+    ],
+    "sizes": [
+      "M",
+      "S",
+      "XL",
+      "L"
+    ],
+    "colors": [
+      {
+        "hex": "#000000",
+        "name": "noire"
+      },
+      {
+        "hex": "#707070",
+        "name": "gris"
+      }
+    ],
+    "inStock": true,
+    "isNew": true,
+    "isLimited": false,
+    "name": {
+      "fr": "T-SHIRT shadow monarch",
+      "ar": "تيشيرت سيد الظلال"
+    },
+    "description": {
+      "fr": "T-shirt oversize au style streetwear premium, inspiré par l’univers du Shadow Monarch. Son design graphique en noir et blanc, accompagné de détails violets intenses, apporte une identité sombre, élégante et moderne. Une pièce forte pensée pour un look streetwear affirmé et original.",
+      "ar": "تيشيرت واسع بقصة Oversize مستوحى من شخصية سيد الظلال (Shadow Monarch). يتميز بتصميم جرافيكي باللونين الأسود والأبيض مع تفاصيل بنفسجية قوية، ليمنح القطعة طابعًا داكنًا، أنيقًا وعصريًا. قطعة مميزة لعشاق ستايل الـStreetwear والاطلالات الجريئة."
+    },
+    "material": {
+      "fr": "Matière : coton doux et confortable\nCoupe : Oversize\nTissu agréable à porter au quotidien\nLavage en machine à basse température\nLaver à l’envers pour préserver l’imprimé\nÉviter le sèche-linge à haute température\nRepasser à basse température sur l’envers",
+      "ar": "الخامة: قطن ناعم ومريح\nالقصة: Oversize\nقماش مريح ومناسب للارتداء اليومي\nيُغسل في الغسالة على درجة حرارة منخفضة\nيُفضّل غسل التيشيرت مقلوبًا للحفاظ على الطباعة\nتجنّب التجفيف بدرجات حرارة مرتفعة\nالكي على درجة حرارة منخفضة ومن الجهة الداخلية"
+    },
+    "sizeGuideNote": {
+      "fr": "Coupe oversize : nous recommandons de choisir votre taille habituelle pour un rendu oversize.\nPour une coupe plus ajustée, choisissez une taille en dessous.",
+      "ar": "القصة Oversize: ننصح باختيار مقاسك المعتاد للحصول على مظهر واسع.\nللحصول على قصة أكثر قربًا للجسم، اختر مقاسًا أصغر بدرجة واحدة."
     }
   }
 ];

@@ -189,6 +189,21 @@ legend{ font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; color:
   .prow__actions{ grid-column:1/-1; justify-content:space-between; flex-wrap:wrap; }
   .grid2{ grid-template-columns:1fr; }
 }
+/* ---- pack ---- */
+#editor [hidden]{ display:none !important; }
+.tagpill--pack{ color:var(--off-white); border-color:var(--off-white); }
+.pieces{ display:grid; grid-template-columns:repeat(auto-fill,minmax(112px,1fr)); gap:10px; }
+.piece-opt{ position:relative; border:1px solid var(--line); background:var(--charcoal-2); color:var(--dim); padding:0; text-align:left; cursor:pointer; transition:border-color .2s; }
+.piece-opt:hover{ border-color:var(--blood-bright); }
+.piece-opt.on{ border-color:var(--off-white); color:var(--off-white); box-shadow:0 0 0 1px var(--off-white); }
+.piece-opt__img{ display:block; aspect-ratio:4/5; background:var(--charcoal-3); position:relative; overflow:hidden; }
+.piece-opt__img img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+.piece-opt__name{ display:block; padding:7px 8px; font-size:11px; line-height:1.3; }
+.piece-opt__check{ position:absolute; top:6px; right:6px; width:20px; height:20px; background:var(--off-white); color:var(--black); font-size:12px; font-weight:700; display:flex; align-items:center; justify-content:center; }
+.combo-row{ display:flex; align-items:center; gap:14px; margin-bottom:10px; }
+.combo-row .tg{ min-width:130px; }
+.combo-row input[type=number]{ width:170px; padding:10px 12px; background:var(--charcoal-2); border:1px solid var(--line); color:var(--off-white); }
+.combo-row input[disabled]{ opacity:.35; }
 </style>
 </head>
 <body>
@@ -241,6 +256,7 @@ legend{ font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; color:
       <option value="jackets">Vestes</option>
       <option value="caps">Casquettes</option>
       <option value="backpacks">Sacs & Backpacks</option>
+      <option value="packs">Packs</option>
     </select>
   </div>
 
@@ -255,6 +271,14 @@ legend{ font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; color:
       <button class="icon-btn" id="editorClose" aria-label="Fermer">✕</button>
     </div>
     <div class="sheet__body">
+
+      <fieldset>
+        <legend>Type de produit</legend>
+        <div class="toggles">
+          <label class="tg"><span class="switch" data-sw="isPack"></span> Pack (plusieurs pièces)</label>
+        </div>
+        <div class="hint" style="margin-top:8px;font-size:11px;color:var(--muted)">Un pack est composé de produits déjà créés. Le client choisit la formule (1, 2 ou 3 pièces), puis la pièce, la taille et la couleur de chacune.</div>
+      </fieldset>
 
       <fieldset>
         <legend>Identité</legend>
@@ -278,7 +302,20 @@ legend{ font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; color:
         </div>
       </fieldset>
 
-      <fieldset>
+      <fieldset data-pack-only hidden>
+        <legend>Pièces du pack <span class="req" style="color:var(--blood-bright)">*</span></legend>
+        <div class="pieces" id="packPieces"></div>
+        <div class="hint" style="margin-top:8px;font-size:11px;color:var(--muted)">Clique les produits qui peuvent entrer dans ce pack. Le client pourra choisir plusieurs fois la même pièce. Tailles, couleurs et photos viennent du produit.</div>
+        <div class="errmsg" id="pack-err" style="display:none;color:var(--blood-bright);font-size:11px;margin-top:6px"></div>
+      </fieldset>
+
+      <fieldset data-pack-only hidden>
+        <legend>Formules &amp; prix <span class="req" style="color:var(--blood-bright)">*</span></legend>
+        <div id="packCombos"></div>
+        <div class="hint" style="margin-top:8px;font-size:11px;color:var(--muted)">Active les formules proposées et indique le prix total de chacune. Le prix affiché sur la boutique est « À partir de » la formule la moins chère.</div>
+      </fieldset>
+
+      <fieldset data-normal-only>
         <legend>Prix &amp; catégorie</legend>
         <div class="grid2">
           <div class="f" data-f="price">
@@ -300,7 +337,7 @@ legend{ font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; color:
         </div>
       </fieldset>
 
-      <fieldset>
+      <fieldset data-normal-only>
         <legend>Tailles disponibles <span class="req" style="color:var(--blood-bright)">*</span></legend>
         <div class="chips" id="sizeChips"></div>
         <div class="f" style="margin-top:12px;max-width:260px">
@@ -311,7 +348,7 @@ legend{ font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; color:
         <div class="errmsg" id="size-err" style="display:none;color:var(--blood-bright);font-size:11px;margin-top:6px">Choisis au moins une taille.</div>
       </fieldset>
 
-      <fieldset>
+      <fieldset data-normal-only>
         <legend>Couleurs (optionnel)</legend>
         <div id="colorRows"></div>
         <button class="btn btn--sm btn--ghost" id="btnAddColor" type="button">＋ Ajouter une couleur</button>
@@ -353,7 +390,7 @@ legend{ font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; color:
             <div class="errmsg">مطلوب.</div>
           </div>
         </div>
-        <div class="grid2">
+        <div class="grid2" data-normal-only>
           <div class="f">
             <label>Matière &amp; entretien (FR)</label>
             <textarea id="in-mat-fr"></textarea>
@@ -363,7 +400,7 @@ legend{ font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; color:
             <textarea id="in-mat-ar" dir="rtl"></textarea>
           </div>
         </div>
-        <div class="grid2">
+        <div class="grid2" data-normal-only>
           <div class="f">
             <label>Note guide des tailles (FR)</label>
             <textarea id="in-sg-fr"></textarea>
@@ -417,7 +454,7 @@ legend{ font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; color:
 
 /* ============ CONSTANTES ============ */
 var LS_KEY = "vyron_admin_v2";
-var CAT_LABELS = { tshirts:"T-Shirts", shorts:"Shorts", joggers:"Joggers", jackets:"Vestes", caps:"Casquettes", backpacks:"Sacs & Backpacks" };
+var CAT_LABELS = { tshirts:"T-Shirts", shorts:"Shorts", joggers:"Joggers", jackets:"Vestes", caps:"Casquettes", backpacks:"Sacs & Backpacks", packs:"Packs" };
 var SIZE_PRESET = ["S","M","L","XL","XXL","Unique"];
 var IMG_DIR = "assets/products/";
 
@@ -589,6 +626,7 @@ function renderList(){
     var tags = "";
     if (p.isNew) tags += '<span class="tagpill tagpill--new">New</span>';
     if (p.isLimited) tags += '<span class="tagpill tagpill--lim">Limited</span>';
+    if (p.isPack) tags = '<span class="tagpill tagpill--pack">Pack</span>' + tags;
     if (featured.indexOf(p.id) !== -1) tags += '<span class="tagpill tagpill--feat">Phare</span>';
     return '<div class="prow" data-idx="'+idx+'">' +
       thumb +
@@ -596,8 +634,8 @@ function renderList(){
         '<div class="prow__name">'+esc(p.name.fr || "(sans nom)")+'<span class="ar">'+esc(p.name.ar||"")+'</span></div>' +
         '<div class="prow__meta">' +
           '<span>'+esc(CAT_LABELS[p.category] || p.category)+'</span>' +
-          '<span>·</span><span>'+money(p.price)+'</span>' +
-          '<span>·</span><span>'+((p.sizes||[]).join(" / ")||"—")+'</span>' +
+          '<span>·</span><span>'+(p.isPack ? "dès " : "")+money(p.price)+'</span>' +
+          '<span>·</span><span>'+(p.isPack ? esc(packSummary(p)) : ((p.sizes||[]).join(" / ")||"—"))+'</span>' +
           tags +
         '</div>' +
       '</div>' +
@@ -621,6 +659,59 @@ function esc(s){
   });
 }
 
+/* ============ PACKS ============ */
+var PACK_QTYS = [1, 2, 3];
+
+function packLowest(pk){
+  var prices = ((pk && pk.combos) || []).map(function(c){ return c.price; }).filter(function(n){ return n > 0; });
+  return prices.length ? Math.min.apply(null, prices) : 0;
+}
+function packSummary(p){
+  var combos = (p.pack && p.pack.combos) || [];
+  if (!combos.length) return "aucune formule";
+  return combos.map(function(c){ return c.qty + " pc " + money(c.price); }).join(" · ");
+}
+function packsUsing(id){
+  return products.filter(function(p){ return p.isPack && p.pack && (p.pack.pieces || []).indexOf(id) !== -1; });
+}
+function ensureDraftPack(){
+  if (!draft.pack) draft.pack = { pieces: [], combos: [] };
+  if (!draft.pack.pieces) draft.pack.pieces = [];
+  if (!draft.pack.combos) draft.pack.combos = [];
+}
+function applyPackMode(){
+  var on = !!draft.isPack;
+  if (on) ensureDraftPack();
+  $$("#editor [data-pack-only]").forEach(function(el){ el.hidden = !on; });
+  $$("#editor [data-normal-only]").forEach(function(el){ el.hidden = on; });
+  if (on) renderPackBuilder();
+}
+function renderPackBuilder(){
+  ensureDraftPack();
+  var self = editIndex !== -1 ? products[editIndex] : null;
+  var pool = products.filter(function(p){ return !p.isPack && p !== self; });
+  $("#packPieces").innerHTML = pool.length ? pool.map(function(p){
+    var img = p.images && p.images[0] ? resolveImg(p.images[0]) : "";
+    var on = draft.pack.pieces.indexOf(p.id) !== -1;
+    return '<button type="button" class="piece-opt'+(on?' on':'')+'" data-piece="'+esc(p.id)+'">' +
+      '<span class="piece-opt__img">'+(img ? '<img src="'+esc(img)+'" alt="" data-img-fallback="'+esc(p.images[0])+'">' : '')+'</span>' +
+      '<span class="piece-opt__name">'+esc(p.name.fr || p.id)+'</span>' +
+      (on ? '<span class="piece-opt__check">✓</span>' : '') +
+    '</button>';
+  }).join("") : '<div class="hint" style="grid-column:1/-1;font-size:12px;color:var(--warn)">Aucun produit trouvé dans ce catalogue. Importe ton products-data.js (menu ⋯ → Importer), ou crée d\'abord des produits normaux (t-shirt, jogger…) : un pack est composé de produits existants.</div>';
+  $$("#packPieces img[data-img-fallback]").forEach(function(im){
+    attachImageFallback(im, im.getAttribute("data-img-fallback"));
+  });
+
+  $("#packCombos").innerHTML = PACK_QTYS.map(function(n){
+    var c = draft.pack.combos.filter(function(x){ return x.qty === n; })[0];
+    return '<div class="combo-row">' +
+      '<label class="tg"><span class="switch'+(c?' on':'')+'" data-combo="'+n+'"></span> '+n+(n>1?' pièces':' pièce')+'</label>' +
+      '<input type="number" min="0" step="50" placeholder="Prix total (DA)" value="'+(c && c.price ? c.price : "")+'" data-comboprice="'+n+'"'+(c?'':' disabled')+' />' +
+    '</div>';
+  }).join("");
+}
+
 /* ============ ÉDITEUR ============ */
 function blankProduct(){
   return {
@@ -638,6 +729,9 @@ function openEditor(idx){
   if (!draft.images || !draft.images.length) draft.images = [""];
   if (!draft.sizes) draft.sizes = [];
   if (!draft.colors) draft.colors = [];
+  if (!draft.material) draft.material = { fr:"", ar:"" };
+  if (!draft.sizeGuideNote) draft.sizeGuideNote = { fr:"", ar:"" };
+  if (draft.isPack) ensureDraftPack();
   draft._featured = editIndex !== -1 && featured.indexOf(draft.id) !== -1;
   draft._idTouched = editIndex !== -1;
 
@@ -647,7 +741,7 @@ function openEditor(idx){
   $("#in-name-ar").value = draft.name.ar;
   $("#in-id").value = draft.id;
   $("#in-price").value = draft.price || "";
-  $("#in-category").value = draft.category;
+  $("#in-category").value = draft.isPack ? "tshirts" : draft.category;
   $("#in-desc-fr").value = draft.description.fr;
   $("#in-desc-ar").value = draft.description.ar;
   $("#in-mat-fr").value = draft.material.fr;
@@ -661,6 +755,7 @@ function openEditor(idx){
   renderColorRows();
   renderImgRows();
   renderSwitches();
+  applyPackMode();
   updatePreview();
 
   $("#editor").classList.add("show");
@@ -726,7 +821,7 @@ function updatePreview(){
   syncDraftFromInputs();
   $("#pcardCat").textContent = CAT_LABELS[draft.category] || draft.category;
   $("#pcardName").textContent = draft.name.fr || "(nom du produit)";
-  $("#pcardPrice").textContent = money(draft.price);
+  $("#pcardPrice").textContent = (draft.isPack ? "À partir de " : "") + money(draft.price);
   var badges = "";
   if (!draft.inStock) badges += '<span class="pcard__b">Rupture</span>';
   if (draft.isNew) badges += '<span class="pcard__b">New</span>';
@@ -747,8 +842,14 @@ function syncDraftFromInputs(){
   draft.name.fr = $("#in-name-fr").value.trim();
   draft.name.ar = $("#in-name-ar").value.trim();
   draft.id = $("#in-id").value.trim();
-  draft.price = parseInt($("#in-price").value, 10) || 0;
-  draft.category = $("#in-category").value;
+  if (draft.isPack){
+    ensureDraftPack();
+    draft.category = "packs";
+    draft.price = packLowest(draft.pack);
+  } else {
+    draft.price = parseInt($("#in-price").value, 10) || 0;
+    draft.category = $("#in-category").value;
+  }
   draft.description.fr = $("#in-desc-fr").value.trim();
   draft.description.ar = $("#in-desc-ar").value.trim();
   draft.material.fr = $("#in-mat-fr").value.trim();
@@ -766,6 +867,7 @@ function clearErrors(){
   $$("#editor .f").forEach(function(f){ f.classList.remove("err"); });
   $("#size-err").style.display = "none";
   $("#img-err").style.display = "none";
+  $("#pack-err").style.display = "none";
 }
 
 function validateDraft(){
@@ -780,8 +882,21 @@ function validateDraft(){
     var dup = products.some(function(p, i){ return p.id === draft.id && i !== editIndex; });
     if (dup){ setErr("id"); errs.push("Identifiant « "+draft.id+" » déjà utilisé"); }
   }
-  if (!(draft.price > 0)){ setErr("price"); errs.push("Prix invalide"); }
-  if (!draft.sizes.length){ $("#size-err").style.display = "block"; errs.push("Aucune taille sélectionnée"); }
+  if (!draft.isPack && !(draft.price > 0)){ setErr("price"); errs.push("Prix invalide"); }
+  if (!draft.isPack && !draft.sizes.length){ $("#size-err").style.display = "block"; errs.push("Aucune taille sélectionnée"); }
+  if (draft.isPack){
+    ensureDraftPack();
+    var packMsgs = [];
+    if (!draft.pack.pieces.length) packMsgs.push("Choisis au moins une pièce pour le pack");
+    if (!draft.pack.combos.length) packMsgs.push("Active au moins une formule (1, 2 ou 3 pièces)");
+    else if (draft.pack.combos.some(function(c){ return !(c.price > 0); })) packMsgs.push("Chaque formule activée doit avoir un prix");
+    var usedBy = editIndex !== -1 ? packsUsing(products[editIndex].id) : [];
+    if (usedBy.length) packMsgs.push("Ce produit est une pièce du pack « " + usedBy[0].name.fr + " » : il ne peut pas devenir un pack");
+    if (packMsgs.length){
+      var pe = $("#pack-err"); pe.textContent = packMsgs.join(" · "); pe.style.display = "block";
+      errs = errs.concat(packMsgs);
+    }
+  }
   var imgs = draft.images.map(function(s){ return s.trim(); }).filter(Boolean);
   if (!imgs.length){ $("#img-err").style.display = "block"; errs.push("Aucune photo"); }
   if (!draft.description.fr){ setErr("desc-fr"); errs.push("Description FR manquante"); }
@@ -799,6 +914,21 @@ function saveDraft(){
   draft.colors = (draft.colors || [])
     .filter(function(c){ return c && c.name && c.name.trim(); })
     .map(function(c){ return { hex: c.hex || "#000000", name: c.name.trim() }; });
+  if (draft.isPack){
+    ensureDraftPack();
+    var liveIds = {};
+    products.forEach(function(p){ if (!p.isPack) liveIds[p.id] = true; });
+    draft.pack.pieces = draft.pack.pieces.filter(function(id){ return liveIds[id]; });
+    draft.pack.combos = draft.pack.combos
+      .filter(function(c){ return c.price > 0; })
+      .map(function(c){ return { qty: c.qty, price: c.price }; })
+      .sort(function(a, b){ return a.qty - b.qty; });
+    draft.category = "packs";
+    draft.price = packLowest(draft.pack);
+    delete draft.sizes; delete draft.colors; delete draft.material; delete draft.sizeGuideNote;
+  } else {
+    delete draft.isPack; delete draft.pack;
+  }
   var featFlag = draft._featured;
   var oldId = editIndex !== -1 ? products[editIndex].id : null;
   delete draft._featured;
@@ -812,6 +942,10 @@ function saveDraft(){
     if (oldId && oldId !== draft.id){
       var fi = featured.indexOf(oldId);
       if (fi !== -1) featured[fi] = draft.id;
+      // si ce produit est une pièce de packs, suivre le nouvel identifiant
+      products.forEach(function(p){
+        if (p.isPack && p.pack && p.pack.pieces) p.pack.pieces = p.pack.pieces.map(function(x){ return x === oldId ? draft.id : x; });
+      });
     }
   }
   // pièce phare
@@ -850,12 +984,23 @@ function validateAll(){
     if (!p.name || !p.name.fr) problems.push(label + " : nom FR manquant");
     if (!p.name || !p.name.ar) problems.push(label + " : nom AR manquant");
     if (!(p.price > 0)) problems.push(label + " : prix invalide");
-    if (!p.sizes || !p.sizes.length) problems.push(label + " : aucune taille");
+    if (!p.isPack && (!p.sizes || !p.sizes.length)) problems.push(label + " : aucune taille");
     if (!p.images || !p.images.filter(Boolean).length) problems.push(label + " : aucune photo");
     if (!p.description || !p.description.fr) problems.push(label + " : description FR manquante");
     if (!p.description || !p.description.ar) problems.push(label + " : description AR manquante");
-    if (["tshirts","shorts","joggers","jackets","caps","backpacks"].indexOf(p.category) === -1)
+    if (["tshirts","shorts","joggers","jackets","caps","backpacks"].indexOf(p.category) === -1 && !(p.isPack && p.category === "packs"))
       problems.push(label + " : catégorie inconnue (" + p.category + ")");
+    if (p.isPack){
+      var pk = p.pack || {};
+      var pieces = pk.pieces || [], combos = pk.combos || [];
+      if (!pieces.length) problems.push(label + " : le pack n'a aucune pièce");
+      pieces.forEach(function(id){
+        var src = products.filter(function(x){ return x.id === id; })[0];
+        if (!src || src.isPack) problems.push(label + " : pièce introuvable (" + id + ")");
+      });
+      if (!combos.length || combos.some(function(c){ return !(c.qty > 0) || !(c.price > 0); }))
+        problems.push(label + " : il faut au moins une formule avec un prix");
+    }
   });
   return problems;
 }
@@ -964,6 +1109,12 @@ function bind(){
     }
     if (t.hasAttribute("data-del")){
       var di = +t.getAttribute("data-del");
+      var usedIn = packsUsing(products[di].id);
+      if (usedIn.length){
+        alert("Impossible de supprimer « " + (products[di].name.fr || products[di].id) + " » : il est utilisé dans le pack « " +
+          usedIn.map(function(x){ return x.name.fr; }).join("», «") + " ». Retire-le d'abord du pack.");
+        return;
+      }
       if (!confirm('Supprimer « ' + (products[di].name.fr || products[di].id) + ' » ?')) return;
       products.splice(di, 1);
       markDirty(); render(); toast("Produit supprimé"); return;
@@ -1086,10 +1237,42 @@ function bind(){
     sw.addEventListener("click", function(){
       var k = sw.getAttribute("data-sw");
       if (k === "featured") draft._featured = !draft._featured;
+      else if (k === "isPack"){ draft.isPack = !draft.isPack; if (draft.isPack) ensureDraftPack(); applyPackMode(); }
       else draft[k] = !draft[k];
-      sw.classList.toggle("on");
+      sw.classList.toggle("on", k === "featured" ? !!draft._featured : !!draft[k]);
       updatePreview();
     });
+  });
+
+  // pack : pièces
+  $("#packPieces").addEventListener("click", function(e){
+    var b = e.target.closest("[data-piece]"); if (!b) return;
+    ensureDraftPack();
+    var id = b.getAttribute("data-piece");
+    var i = draft.pack.pieces.indexOf(id);
+    if (i === -1) draft.pack.pieces.push(id); else draft.pack.pieces.splice(i, 1);
+    $("#pack-err").style.display = "none";
+    renderPackBuilder();
+  });
+  // pack : formules (interrupteur + prix)
+  $("#packCombos").addEventListener("click", function(e){
+    var sw = e.target.closest("[data-combo]"); if (!sw) return;
+    ensureDraftPack();
+    var n = +sw.getAttribute("data-combo");
+    var has = draft.pack.combos.some(function(c){ return c.qty === n; });
+    if (has) draft.pack.combos = draft.pack.combos.filter(function(c){ return c.qty !== n; });
+    else draft.pack.combos.push({ qty: n, price: 0 });
+    draft.pack.combos.sort(function(a, b){ return a.qty - b.qty; });
+    $("#pack-err").style.display = "none";
+    renderPackBuilder();
+    if (!has){ var inp = $('#packCombos [data-comboprice="'+n+'"]'); if (inp) inp.focus(); }
+    updatePreview();
+  });
+  $("#packCombos").addEventListener("input", function(e){
+    var inp = e.target.closest("[data-comboprice]"); if (!inp) return;
+    var n = +inp.getAttribute("data-comboprice");
+    draft.pack.combos.forEach(function(c){ if (c.qty === n) c.price = parseInt(inp.value, 10) || 0; });
+    updatePreview();
   });
 
   // validation modal

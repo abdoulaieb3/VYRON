@@ -1,6 +1,6 @@
 /* =====================================================================
    VYRON — CATALOGUE PRODUITS
-   Généré par admin.html le 26/09/2026 19:09:34
+   Généré par admin.html le 02/10/2026 22:19:17
    Pour publier : place ce fichier à la racine du site (à côté de
    index.html), puis ré-uploade le dossier chez ton hébergeur.
    ===================================================================== */
@@ -138,6 +138,84 @@ window.VYRON_PRODUCTS = [
     "sizeGuideNote": {
       "fr": "Coupe oversize : nous recommandons de choisir votre taille habituelle pour un rendu oversize.\nPour une coupe plus ajustée, choisissez une taille en dessous.",
       "ar": "القصة Oversize: ننصح باختيار مقاسك المعتاد للحصول على مظهر واسع.\nللحصول على قصة أكثر قربًا للجسم، اختر مقاسًا أصغر بدرجة واحدة."
+    }
+  },
+  {
+    "id": "mmm",
+    "category": "packs",
+    "price": 2000,
+    "images": [
+      "assets/products/photo-3.jpg"
+    ],
+    "inStock": true,
+    "isNew": true,
+    "isLimited": false,
+    "name": {
+      "fr": "mmm",
+      "ar": "mmm"
+    },
+    "description": {
+      "fr": "ccc",
+      "ar": "ccc"
+    },
+    "isPack": true,
+    "pack": {
+      "pieces": [
+        "vyron-zip-up",
+        "baggy-jogger",
+        "t-shirt-shadow-monarch"
+      ],
+      "combos": [
+        {
+          "qty": 1,
+          "price": 2000
+        },
+        {
+          "qty": 2,
+          "price": 5000
+        },
+        {
+          "qty": 3,
+          "price": 7000
+        }
+      ]
+    }
+  },
+  {
+    "id": "dd",
+    "category": "packs",
+    "price": 4000,
+    "images": [
+      "assets/products/photo-3.jpg"
+    ],
+    "inStock": true,
+    "isNew": true,
+    "isLimited": false,
+    "name": {
+      "fr": "dd",
+      "ar": "dd"
+    },
+    "description": {
+      "fr": "vvvvvvvvv",
+      "ar": "vvvvvvvvvvvvvvvvvv"
+    },
+    "isPack": true,
+    "pack": {
+      "pieces": [
+        "vyron-zip-up",
+        "baggy-jogger",
+        "t-shirt-shadow-monarch"
+      ],
+      "combos": [
+        {
+          "qty": 2,
+          "price": 4000
+        },
+        {
+          "qty": 3,
+          "price": 7000
+        }
+      ]
     }
   }
 ];

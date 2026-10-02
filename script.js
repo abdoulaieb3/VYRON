@@ -141,7 +141,7 @@ const I18N = {
     "shop.noResults": "Aucun produit ne correspond à ta recherche.",
     "shop.searchPlaceholder": "Rechercher un produit…",
     "shop.results": (n) => n + (n > 1 ? " produits" : " produit"),
-    filters: { all: "Tous", tshirts: "T-Shirts", shorts: "Shorts", joggers: "Joggers", jackets: "Vestes", caps: "Casquettes", backpacks: "Sacs & Backpacks" },
+    filters: { all: "Tous", tshirts: "T-Shirts", shorts: "Shorts", joggers: "Joggers", jackets: "Vestes", caps: "Casquettes", backpacks: "Sacs & Backpacks", packs: "Packs" },
     "why.eyebrow": "Pourquoi VYRON",
     "why.title": "Ce qui nous sépare",
     why: [
@@ -178,6 +178,14 @@ const I18N = {
     "toast.added": "Ajouté au panier",
     "toast.removed": "Retiré du panier",
     "toast.orderSent": "Commande envoyée",
+    pack: {
+      word: "Pack", from: "À partir de",
+      chooseFormula: "Choisis ta formule", chooseItems: "Compose ton pack",
+      pieceN: (n) => "Pièce " + n, size: "Taille", color: "Couleur",
+      hint: "Choisis la pièce, la taille et la couleur de chaque pièce.",
+      none: "Aucune pièce disponible pour le moment.",
+      formula: (n) => n + (n > 1 ? " pièces" : " pièce")
+    },
     qv: {
       inStock: "En stock", outStock: "Rupture de stock",
       selectSize: "Choisis une taille", sizeErr: "Sélectionne une taille avant d'ajouter au panier.",
@@ -236,7 +244,7 @@ const I18N = {
     "shop.noResults": "لا يوجد منتج يطابق بحثك.",
     "shop.searchPlaceholder": "ابحث عن منتج…",
     "shop.results": (n) => n + " منتج",
-    filters: { all: "الكل", tshirts: "تيشيرت", shorts: "شورت", joggers: "جوغرز", jackets: "جواكيت", caps: "كاسكيطات", backpacks: "حقائب" },
+    filters: { all: "الكل", tshirts: "تيشيرت", shorts: "شورت", joggers: "جوغرز", jackets: "جواكيت", caps: "كاسكيطات", backpacks: "حقائب", packs: "باقات" },
     "why.eyebrow": "لماذا فايرون",
     "why.title": "ما يميّزنا",
     why: [
@@ -273,6 +281,14 @@ const I18N = {
     "toast.added": "أُضيف إلى السلة",
     "toast.removed": "حُذف من السلة",
     "toast.orderSent": "تم إرسال الطلب",
+    pack: {
+      word: "باقة", from: "ابتداءً من",
+      chooseFormula: "اختر العرض", chooseItems: "كوّن باقتك",
+      pieceN: (n) => "القطعة " + n, size: "المقاس", color: "اللون",
+      hint: "اختر القطعة والمقاس واللون لكل قطعة.",
+      none: "لا توجد قطع متوفرة حالياً.",
+      formula: (n) => n === 1 ? "قطعة واحدة" : (n === 2 ? "قطعتان" : n + " قطع")
+    },
     qv: {
       inStock: "متوفر", outStock: "نفد المخزون",
       selectSize: "اختر المقاس", sizeErr: "اختر مقاساً قبل الإضافة إلى السلة.",
@@ -402,7 +418,7 @@ function renderNav(){
 function renderFilters(){
   const wrap = $("[data-filters]");
   const f = t().filters;
-  const cats = ["all", "tshirts", "shorts", "joggers", "jackets", "caps", "backpacks"];
+  const cats = ["all", "tshirts", "shorts", "joggers", "jackets", "caps", "backpacks", "packs"];
   wrap.innerHTML = cats.map(c =>
     `<button class="pill${state.filter === c ? " active" : ""}" data-filter="${c}" type="button">${escapeHtml(f[c])}</button>`
   ).join("");
@@ -443,7 +459,7 @@ function renderInstagram(){
   // <!-- REPLACE INSTAGRAM IMAGE HERE : mets 6 images carrées dans assets/social/ -->
   // ⚙️ url : colle ici le lien du post Instagram correspondant à chaque photo (laisse "" en attendant).
   const posts = [
-    { src: "assets/products/vyron01-2.jpg", url: "https://www.instagram.com/p/DaJLtzpDZYP/?img_index=1" },
+    { src: "assets/lookbook/look-1.jpg", url: "https://www.instagram.com/p/DaJLtzpDZYP/?img_index=1" },
     { src: "assets/lookbook/image12.png", url: "https://www.instagram.com/p/DbEIYdMDceo/?img_index=1" },
     { src: "assets/lookbook/IMG_0630.jpeg", url: "https://www.instagram.com/p/DaOSZ5Ejd2l/?img_index=1" }
   ];
@@ -485,14 +501,16 @@ function renderProducts(){
 
   grid.innerHTML = list.map((p, i) => {
     const badges = [];
-    if (!p.inStock) badges.push(`<span class="badge badge--out">${q.qv.outStock}</span>`);
+    const inStock = productInStock(p);
+    if (p.isPack) badges.push(`<span class="badge badge--pack">PACK</span>`);
+    if (!inStock) badges.push(`<span class="badge badge--out">${q.qv.outStock}</span>`);
     if (p.isNew)    badges.push(`<span class="badge badge--new">New</span>`);
     if (p.isLimited)badges.push(`<span class="badge badge--limited">Limited</span>`);
     const second = p.images[1]
       ? `<img class="img-2" src="${p.images[1]}" alt="" loading="lazy" onerror="this.style.display='none'">`
       : "";
     return `
-      <article class="card${p.inStock ? "" : " is-out"} reveal d${(i%4)+1}">
+      <article class="card${inStock ? "" : " is-out"} reveal d${(i%4)+1}">
         <div class="card__media" data-quick="${p.id}" role="button" tabindex="0" aria-label="${escapeAttr(pName(p))}">
           ${badges.length ? `<div class="badges">${badges.join("")}</div>` : ""}
           ${imgTag(p.images[0], pName(p))}
@@ -506,7 +524,7 @@ function renderProducts(){
         <div class="card__body">
           <span class="card__cat">${escapeHtml(q.filters[p.category] || p.category)}</span>
           <span class="card__name">${escapeHtml(pName(p))}</span>
-          <span class="card__price">${money(p.price)}</span>
+          <span class="card__price">${priceLabel(p)}</span>
         </div>
       </article>`;
   }).join("");
@@ -520,6 +538,7 @@ function renderProducts(){
 function openQuickView(id){
   const p = getProduct(id);
   if (!p) return;
+  if (p.isPack){ openPackView(p); return; }
   state.currentProduct = p;
   state.currentSize = null;
   state.currentColor = (p.colors && p.colors.length) ? p.colors[0].name : null;
@@ -621,14 +640,274 @@ function closeQuickView(){
 }
 
 /* ------------------------------------------------------------------
+   9b. PACKS  (produit composé de plusieurs pièces existantes)
+   Données : p.isPack, p.pack = { pieces:[id,…], combos:[{qty, price},…] }
+   ------------------------------------------------------------------ */
+function packCombos(p){
+  const list = (p.pack && Array.isArray(p.pack.combos)) ? p.pack.combos : [];
+  return list.filter(c => c && c.qty > 0 && c.price > 0).slice().sort((a, b) => a.qty - b.qty);
+}
+function packComboPrice(p, qty){
+  const c = packCombos(p).find(x => x.qty === qty);
+  return c ? c.price : null;
+}
+function packPieces(p){
+  const ids = (p.pack && Array.isArray(p.pack.pieces)) ? p.pack.pieces : [];
+  return ids.map(getProduct).filter(x => x && !x.isPack);
+}
+function packEligible(p){ return packPieces(p).filter(x => x.inStock); }
+function packAvailable(p){ return !!p.inStock && packCombos(p).length > 0 && packEligible(p).length > 0; }
+function productInStock(p){ return p.isPack ? packAvailable(p) : p.inStock; }
+function priceLabel(p){ return p.isPack ? I18N[state.lang].pack.from + " " + money(p.price) : money(p.price); }
+
+function packFormulaLabel(n, lang){ return I18N[lang || state.lang].pack.formula(n); }
+function packTitle(p, qty, lang){
+  lang = lang || state.lang;
+  const word = I18N[lang].pack.word, name = p.name[lang] || "";
+  // évite « Pack Pack Duo » si le nom contient déjà le mot « Pack »
+  const base = name.toLowerCase().indexOf(word.toLowerCase()) === 0 ? name : word + " " + name;
+  return base + " – " + packFormulaLabel(qty, lang);
+}
+function packPickLabel(k, lang){
+  const x = getProduct(k.pid);
+  if (!x) return "";
+  return [x.name[lang], k.size, k.color].filter(Boolean).join(" ");
+}
+function packDetails(l, lang){
+  return (Array.isArray(l.picks) ? l.picks : []).map(k => packPickLabel(k, lang || state.lang)).filter(Boolean).join(" + ");
+}
+function packKey(id, combo, picks){
+  return id + "|" + combo + "|" + picks.map(k => [k.pid, k.size, k.color || ""].join(":")).sort().join("+");
+}
+
+function packSetPiece(slot, x){
+  slot.pid = x.id;
+  slot.size = null;
+  slot.color = (x.colors && x.colors.length) ? x.colors[0].name : "";
+}
+function packBlankSlot(p){
+  const slot = { pid: null, size: null, color: null };
+  const el = packEligible(p);
+  if (el.length === 1) packSetPiece(slot, el[0]);
+  return slot;
+}
+function packSyncSlots(){
+  const pk = state.pack, p = state.currentProduct;
+  while (pk.slots.length < pk.qty) pk.slots.push(packBlankSlot(p));
+  if (pk.slots.length > pk.qty) pk.slots.length = pk.qty;
+}
+function packComplete(){
+  const pk = state.pack;
+  if (!pk || !pk.qty || pk.slots.length !== pk.qty) return false;
+  return pk.slots.every(s => {
+    const x = s.pid ? getProduct(s.pid) : null;
+    if (!x || !x.inStock || !s.size) return false;
+    return !(x.colors && x.colors.length) || !!s.color;
+  });
+}
+
+function packRelatedHtml(p){
+  const q = t();
+  const related = PRODUCTS.filter(x => x.category === p.category && x.id !== p.id).slice(0, 4);
+  const rel = related.length ? related : PRODUCTS.filter(x => x.id !== p.id).slice(0, 4);
+  return `
+    <div class="related">
+      <h4>${q.qv.related}</h4>
+      <div class="related-grid">
+        ${rel.map(r => `
+          <div class="related-card" data-quick="${r.id}" role="button" tabindex="0" aria-label="${escapeAttr(pName(r))}">
+            <div class="rc-media">${imgTag(r.images[0], pName(r))}</div>
+            <p>${escapeHtml(pName(r))}</p>
+            <span>${priceLabel(r)}</span>
+          </div>
+        `).join("")}
+      </div>
+    </div>`;
+}
+
+function openPackView(p){
+  state.currentProduct = p;
+  state.currentSize = null;
+  state.currentColor = null;
+  state.currentQty = 1;
+  const combos = packCombos(p);
+  state.pack = { qty: combos.length ? combos[0].qty : 0, slots: [] };
+  packSyncSlots();
+
+  const q = t(), pk = q.pack;
+  const available = packAvailable(p);
+  const firstPrice = combos.length ? combos[0].price : p.price;
+
+  const panel = $("[data-modal-panel]");
+  panel.innerHTML = `
+    <button class="modal__close" data-close-modal type="button" aria-label="Fermer">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+    </button>
+    <div class="qv">
+      <div class="qv__gallery">
+        <div class="qv__main">${imgTag(p.images[0], pName(p))}</div>
+        ${p.images.length > 1 ? `<div class="qv__thumbs">${p.images.map((src, i) =>
+          `<button type="button" class="${i===0?"active":""}" data-qv-thumb="${i}" aria-label="Image ${i+1}">${imgTag(src, "")}</button>`
+        ).join("")}</div>` : ""}
+      </div>
+      <div class="qv__info">
+        <span class="cat">${escapeHtml(q.filters.packs)}</span>
+        <h3>${escapeHtml(pName(p))}</h3>
+        <div class="qv__price" data-pack-price>${money(firstPrice)}</div>
+        <div class="qv__stock ${available ? "in" : "out"}">${available ? q.qv.inStock : q.qv.outStock}</div>
+        <p class="qv__desc">${escapeHtml(p.description[state.lang])}</p>
+
+        <div>
+          <span class="field-label">${pk.chooseFormula}</span>
+          <div class="size-row pack-formulas" data-pack-formulas>
+            ${combos.map(c => `<button type="button" class="size-btn pack-formula${c.qty === state.pack.qty ? " active" : ""}" data-pack-formula="${c.qty}">${escapeHtml(pk.formula(c.qty))} – ${money(c.price)}</button>`).join("")}
+          </div>
+        </div>
+
+        <div>
+          <span class="field-label">${pk.chooseItems}</span>
+          <div data-pack-slots></div>
+        </div>
+
+        <div>
+          <span class="field-label">${q.qv.qty}</span>
+          <div class="qty-row" data-qv-qty>
+            <button type="button" data-qty="-1" aria-label="Diminuer">−</button>
+            <span data-qty-value>1</span>
+            <button type="button" data-qty="1" aria-label="Augmenter">+</button>
+          </div>
+        </div>
+
+        <p class="pack-hint" data-pack-hint>${pk.hint}</p>
+        <div class="qv__actions">
+          <button class="btn btn--solid btn--full" data-qv-add disabled type="button">${q.qv.addCart}</button>
+          <button class="btn btn--wa btn--full" data-qv-wa disabled type="button">${q.qv.wa}</button>
+        </div>
+      </div>
+    </div>
+    ${packRelatedHtml(p)}
+  `;
+
+  $("[data-modal]").classList.add("show");
+  $("[data-modal]").setAttribute("aria-hidden", "false");
+  $("[data-overlay]").classList.add("show");
+  lockScroll(true);
+  renderPackSlots();
+}
+
+function renderPackSlots(){
+  const p = state.currentProduct, pk = state.pack;
+  if (!p || !p.isPack || !pk) return;
+  const lang = state.lang, q = t().pack;
+  const eligible = packEligible(p);
+
+  const wrap = $("[data-pack-slots]");
+  if (wrap){
+    wrap.innerHTML = !eligible.length ? `<p class="pack-hint">${q.none}</p>` : pk.slots.map((s, i) => {
+      const x = s.pid ? getProduct(s.pid) : null;
+      const colors = (x && x.colors) ? x.colors : [];
+      return `
+      <div class="pack-slot">
+        <span class="pack-slot__title">${escapeHtml(q.pieceN(i + 1))}</span>
+        <div class="pack-pieces">
+          ${eligible.map(e => `
+            <button type="button" class="pack-piece${e.id === s.pid ? " active" : ""}" data-pack-piece="${i}" data-pid="${escapeAttr(e.id)}" aria-pressed="${e.id === s.pid}">
+              ${imgTag(e.images[0], e.name[lang])}
+              <span>${escapeHtml(e.name[lang])}</span>
+            </button>`).join("")}
+        </div>
+        ${x ? `
+        <div class="pack-sub">
+          <span class="field-label">${q.size}</span>
+          <div class="size-row">
+            ${x.sizes.map(z => `<button type="button" class="size-btn${z === s.size ? " active" : ""}" data-pack-size="${i}" data-val="${escapeAttr(z)}">${escapeHtml(z)}</button>`).join("")}
+          </div>
+        </div>
+        ${colors.length ? `
+        <div class="pack-sub">
+          <span class="field-label">${q.color} : ${escapeHtml(s.color || "")}</span>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            ${colors.map(c => `
+              <button type="button" data-pack-color="${i}" data-val="${escapeAttr(c.name)}" aria-label="${escapeAttr(c.name)}" aria-pressed="${c.name === s.color}"
+                style="width:24px;height:24px;border-radius:50%;padding:0;cursor:pointer;background-color:${escapeAttr(c.hex)};box-shadow:${c.name === s.color ? "0 0 0 2px var(--off-white)" : "0 0 0 1px var(--line)"};"></button>`).join("")}
+          </div>
+        </div>` : ""}` : ""}
+      </div>`;
+    }).join("");
+  }
+
+  // prix automatique = prix de la formule choisie
+  const price = packComboPrice(p, pk.qty);
+  const priceEl = $("[data-pack-price]");
+  if (priceEl && price != null) priceEl.textContent = money(price);
+
+  // formules : état actif
+  $$("[data-pack-formula]").forEach(b => b.classList.toggle("active", +b.getAttribute("data-pack-formula") === pk.qty));
+
+  // boutons : actifs seulement si tout est choisi
+  const ready = packComplete() && packAvailable(p);
+  $$("[data-qv-add],[data-qv-wa]").forEach(b => { b.disabled = !ready; });
+  const hint = $("[data-pack-hint]");
+  if (hint) hint.hidden = ready;
+}
+
+function addPackToCart(id, combo, slots, qty){
+  const picks = slots.map(s => ({ pid: s.pid, size: s.size, color: s.color || "" }));
+  const key = packKey(id, combo, picks);
+  const line = state.cart.find(l => l.pack && l.key === key);
+  if (line) line.qty += qty;
+  else state.cart.push({ id, pack: true, combo, picks, key, size: "", color: "", qty });
+  persistCart();
+  toast(t()["toast.added"]);
+}
+
+function addPackFromModal(viaWhatsApp){
+  const p = state.currentProduct;
+  if (!p || !p.isPack || !packComplete() || !packAvailable(p)) return;
+  addPackToCart(p.id, state.pack.qty, state.pack.slots, state.currentQty);
+  if (viaWhatsApp){ openWhatsApp(""); return; }
+  closeQuickView();
+  openCart();
+}
+
+function injectPackStyles(){
+  if ($("#vyron-pack-css")) return;
+  const st = document.createElement("style");
+  st.id = "vyron-pack-css";
+  st.textContent = `
+    .badge--pack{ background:transparent; border:1px solid var(--off-white,#e8e4dd); color:var(--off-white,#e8e4dd); }
+    .pack-formulas{ display:flex; flex-wrap:wrap; gap:8px; }
+    .pack-formula{ width:auto; padding-left:16px; padding-right:16px; white-space:nowrap; }
+    .pack-slot{ border:1px solid var(--line,#2e2e2e); padding:14px; margin-top:12px; }
+    .pack-slot__title{ display:block; font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--off-white-dim,#a5a19a); margin-bottom:10px; }
+    .pack-pieces{ display:flex; flex-wrap:wrap; gap:8px; }
+    .pack-piece{ width:84px; padding:0; border:1px solid var(--line,#2e2e2e); background:transparent; color:inherit; cursor:pointer; text-align:center; font-size:10.5px; line-height:1.3; transition:border-color .25s, box-shadow .25s; }
+    .pack-piece img{ display:block; width:100%; aspect-ratio:4/5; object-fit:cover; }
+    .pack-piece span{ display:block; padding:6px 4px; }
+    .pack-piece.active{ border-color:var(--off-white,#e8e4dd); box-shadow:0 0 0 1px var(--off-white,#e8e4dd); }
+    .pack-sub{ margin-top:14px; }
+    .pack-hint{ font-size:12px; color:var(--off-white-dim,#a5a19a); margin:4px 0 0; }
+    .pack-hint[hidden]{ display:none; }
+    [data-qv-add][disabled], [data-qv-wa][disabled]{ opacity:.45; cursor:not-allowed; }
+  `;
+  document.head.appendChild(st);
+}
+
+/* ------------------------------------------------------------------
    10. PANIER
    ------------------------------------------------------------------ */
 function cartCount(){ return state.cart.reduce((s, l) => s + l.qty, 0); }
+function linePrice(l){
+  const p = getProduct(l.id);
+  if (!p) return 0;
+  if (l.pack){
+    const c = packComboPrice(p, l.combo);
+    return c == null ? 0 : c;
+  }
+  return p.price;
+}
 function cartSubtotal(){
-  return state.cart.reduce((s, l) => {
-    const p = getProduct(l.id);
-    return s + (p ? p.price * l.qty : 0);
-  }, 0);
+  return state.cart.reduce((s, l) => s + linePrice(l) * l.qty, 0);
 }
 function deliveryFee(){
   if (!state.wilaya || !WILAYA_DELIVERY_FEES[state.wilaya]) return null;
@@ -641,7 +920,7 @@ function cartTotal(){
 }
 
 function addToCart(id, size, color, qty){
-  const line = state.cart.find(l => l.id === id && l.size === size && (l.color || "") === (color || ""));
+  const line = state.cart.find(l => !l.pack && l.id === id && l.size === size && (l.color || "") === (color || ""));
   if (line) line.qty += qty;
   else state.cart.push({ id, size, color: color || "", qty });
   persistCart();
@@ -687,12 +966,17 @@ function renderCart(){
   body.innerHTML = state.cart.map((l, idx) => {
     const p = getProduct(l.id);
     if (!p) return "";
+    if (l.pack && packComboPrice(p, l.combo) == null) return "";
+    const title = l.pack ? packTitle(p, l.combo, state.lang) : pName(p);
+    const meta = l.pack
+      ? `${escapeHtml(packDetails(l, state.lang))} · ${money(linePrice(l))}`
+      : `${l.color ? `${q["cart.color"]}: ${escapeHtml(l.color)} · ` : ""}${q["cart.size"]}: ${escapeHtml(l.size)} · ${money(p.price)}`;
     return `
       <div class="cart-line">
-        <img class="cart-line__img" src="${p.images[0]}" alt="${escapeAttr(pName(p))}" onerror="this.src='${PLACEHOLDER_IMG}'">
+        <img class="cart-line__img" src="${p.images[0]}" alt="${escapeAttr(title)}" onerror="this.src='${PLACEHOLDER_IMG}'">
         <div class="cart-line__info">
-          <span class="n">${escapeHtml(pName(p))}</span>
-          <span class="meta">${l.color ? `${q["cart.color"]}: ${escapeHtml(l.color)} · ` : ""}${q["cart.size"]}: ${escapeHtml(l.size)} · ${money(p.price)}</span>
+          <span class="n">${escapeHtml(title)}</span>
+          <span class="meta">${meta}</span>
           <div class="cart-line__ctrl">
             <div class="mini-qty">
               <button type="button" data-line-qty="${idx}" data-delta="-1" aria-label="−">−</button>
@@ -782,6 +1066,13 @@ function renderCheckoutSummary(){
   linesWrap.innerHTML = state.cart.map(l => {
     const p = getProduct(l.id);
     if (!p) return "";
+    if (l.pack){
+      if (packComboPrice(p, l.combo) == null) return "";
+      return `<div class="os-line">
+      <span>${escapeHtml(packTitle(p, l.combo, state.lang))} <span class="q">(${escapeHtml(packDetails(l, state.lang))}) ×${l.qty}</span></span>
+      <span>${money(linePrice(l) * l.qty)}</span>
+    </div>`;
+    }
     const variant = [l.color, l.size].filter(Boolean).join(" / ");
     return `<div class="os-line">
       <span>${escapeHtml(pName(p))} <span class="q">(${escapeHtml(variant)}) ×${l.qty}</span></span>
@@ -827,6 +1118,10 @@ function collectOrder(){
   const d = deliveryFee();
   const items = state.cart.map(l => {
     const p = getProduct(l.id);
+    if (p && l.pack){
+      // Pack : le détail des pièces passe dans "size" (affiché entre parenthèses par le Sheet, WhatsApp et la confirmation)
+      return { id: l.id, name: packTitle(p, l.combo, "fr"), size: packDetails(l, "fr"), color: "", qty: l.qty, price: linePrice(l), pack: true };
+    }
     return { id: l.id, name: p ? p.name.fr : l.id, size: l.size, color: l.color || "", qty: l.qty, price: p ? p.price : 0 };
   });
   return {
@@ -918,6 +1213,10 @@ function buildWhatsAppMessage(ref){
   lines.push("*Articles :*");
   state.cart.forEach(l => {
     const p = getProduct(l.id);
+    if (p && l.pack){
+      lines.push("• " + packTitle(p, l.combo, "fr") + " (" + packDetails(l, "fr") + ") x" + l.qty + " — " + money(linePrice(l) * l.qty));
+      return;
+    }
     const variant = [l.color, l.size].filter(Boolean).join(" / ");
     if (p) lines.push("• " + p.name.fr + " (" + variant + ") x" + l.qty + " — " + money(p.price * l.qty));
   });
@@ -1084,7 +1383,7 @@ function initEvents(){
 
   // Délégation de clics globale
   document.addEventListener("click", (e) => {
-    const el = e.target.closest("[data-quick],[data-filter],[data-open-cart],[data-close-cart],[data-checkout],[data-close-checkout],[data-close-modal],[data-open-info],[data-close-info],[data-confirm-close],[data-confirm-wa],[data-submit-order],[data-wa-checkout],[data-qv-add],[data-qv-wa],[data-qv-thumb],[data-color-swatch],[data-size],[data-qty],[data-accordion] button,[data-line-qty],[data-remove-line],a[href^='#']");
+    const el = e.target.closest("[data-quick],[data-filter],[data-open-cart],[data-close-cart],[data-checkout],[data-close-checkout],[data-close-modal],[data-open-info],[data-close-info],[data-confirm-close],[data-confirm-wa],[data-submit-order],[data-wa-checkout],[data-qv-add],[data-qv-wa],[data-qv-thumb],[data-pack-formula],[data-pack-piece],[data-pack-size],[data-pack-color],[data-color-swatch],[data-size],[data-qty],[data-accordion] button,[data-line-qty],[data-remove-line],a[href^='#']");
     if (!el) return;
 
     // Nav interne -> ferme le menu mobile
@@ -1127,6 +1426,29 @@ function initEvents(){
       $$("[data-qv-thumb]").forEach(b => b.classList.toggle("active", b === el));
       return;
     }
+    // Pack : formule / pièce / taille / couleur
+    if (el.hasAttribute("data-pack-formula")){
+      state.pack.qty = +el.getAttribute("data-pack-formula");
+      packSyncSlots();
+      renderPackSlots();
+      return;
+    }
+    if (el.hasAttribute("data-pack-piece")){
+      const slot = state.pack && state.pack.slots[+el.getAttribute("data-pack-piece")];
+      const x = getProduct(el.getAttribute("data-pid"));
+      if (slot && x && slot.pid !== x.id){ packSetPiece(slot, x); renderPackSlots(); }
+      return;
+    }
+    if (el.hasAttribute("data-pack-size")){
+      const slot = state.pack && state.pack.slots[+el.getAttribute("data-pack-size")];
+      if (slot){ slot.size = el.getAttribute("data-val"); renderPackSlots(); }
+      return;
+    }
+    if (el.hasAttribute("data-pack-color")){
+      const slot = state.pack && state.pack.slots[+el.getAttribute("data-pack-color")];
+      if (slot){ slot.color = el.getAttribute("data-val"); renderPackSlots(); }
+      return;
+    }
     // Quick-view : couleur (mémorisée dans state.currentColor, envoyée au panier + Sheet)
     if (el.hasAttribute("data-color-swatch")){
       const wrap = el.closest("[data-color-swatches]");
@@ -1162,6 +1484,7 @@ function initEvents(){
     }
     // Quick-view : add to cart
     if (el.hasAttribute("data-qv-add")){
+      if (state.currentProduct && state.currentProduct.isPack){ addPackFromModal(false); return; }
       if (!state.currentSize){
         $("[data-size-error]").classList.add("show");
         return;
@@ -1173,6 +1496,7 @@ function initEvents(){
     }
     // Quick-view : WhatsApp (ajoute d'abord au panier si taille choisie)
     if (el.hasAttribute("data-qv-wa")){
+      if (state.currentProduct && state.currentProduct.isPack){ addPackFromModal(true); return; }
       if (state.currentSize){
         addToCart(state.currentProduct.id, state.currentSize, state.currentColor, state.currentQty);
       }
@@ -1303,6 +1627,7 @@ function init(){
   document.documentElement.lang = state.lang;
   document.documentElement.dir = state.lang === "ar" ? "rtl" : "ltr";
 
+  injectPackStyles();
   populateWilayas();
   bindSocialLinks();
   setLang(state.lang);        // rend tout + applique i18n

@@ -1,6 +1,6 @@
 /* =====================================================================
    VYRON — CATALOGUE PRODUITS
-   Généré par admin.html le 03/10/2026 20:17:38
+   Généré par admin.html le 09/10/2026 00:23:27
    Pour publier : place ce fichier à la racine du site (à côté de
    index.html), puis ré-uploade le dossier chez ton hébergeur.
    ===================================================================== */
@@ -168,6 +168,88 @@ window.VYRON_PRODUCTS = [
         "enabled": false,
         "tiers": []
       }
+    }
+  },
+  {
+    "id": "vyron-collection-l-essentiel",
+    "category": "tshirts",
+    "price": 3000,
+    "images": [
+      "assets/products/lols-1.jpg",
+      "assets/products/lols-23.jpg"
+    ],
+    "sizes": [
+      "M",
+      "S",
+      "L",
+      "XL"
+    ],
+    "colors": [
+      {
+        "hex": "#000000",
+        "name": "Noir"
+      },
+      {
+        "hex": "#ffffff",
+        "name": "blanc"
+      }
+    ],
+    "inStock": true,
+    "isNew": true,
+    "isLimited": false,
+    "name": {
+      "fr": "VYRON — Collection L’Essentiel",
+      "ar": "VYRON — مجموعة الأساسيات"
+    },
+    "description": {
+      "fr": "Découvrez L’Essentiel de VYRON, un t-shirt au style streetwear minimaliste, conçu pour allier simplicité, confort et élégance. Son design épuré apporte une touche moderne et premium à vos tenues, idéal pour un look décontracté au quotidien.\n\n**Couleurs disponibles :** Blanc et Noir.\n\n**Style :** Streetwear minimaliste et intemporel.",
+      "ar": "اكتشف مجموعة «الأساسيات» من VYRON، تيشيرت بتصميم عصري يجمع بين البساطة والراحة والأناقة. يتميز بتصميم أنيق وبسيط يضيف لمسة فاخرة إلى إطلالتك، وهو مثالي لمحبي أسلوب الستريت وير والإطلالات اليومية العصرية.\n\n**الألوان المتوفرة:** الأبيض والأسود.\n\n**الأسلوب:** ستريت وير بسيط، أنيق وخالد."
+    },
+    "material": {
+      "fr": "**Matière :** Selon la composition indiquée sur l’étiquette du produit.\n\n**Conseils d’entretien :**\n\n* Laver à l’envers avec des couleurs similaires.\n* Privilégier un lavage à basse température.\n* Éviter le blanchiment.\n* Ne pas repasser directement sur le logo.\n* Sécher à l’air libre pour préserver la qualité du vêtement.",
+      "ar": "**الخامة:** تُحدَّد حسب التركيبة الموضحة على ملصق المنتج.\n\n**تعليمات العناية:**\n\n* يُغسل مقلوبًا مع الملابس ذات الألوان المتشابهة.\n* يُفضّل الغسل بدرجة حرارة منخفضة.\n* يُمنع استخدام مواد التبييض.\n* تجنّب الكي المباشر فوق الشعار.\n* يُفضّل التجفيف في الهواء للحفاظ على جودة المنتج."
+    },
+    "sizeGuideNote": {
+      "fr": "**Guide des tailles :** Disponible du S au XL.\n\nChoisissez votre taille habituelle pour une coupe classique. Pour un effet plus ample, typique du style streetwear, vous pouvez opter pour une taille au-dessus.\n\n*Conseil : consultez le guide des tailles avant de passer votre commande afin de choisir la coupe qui vous convient le mieux.*",
+      "ar": "**المقاسات المتوفرة:** من S إلى XL.\n\nاختر مقاسك المعتاد للحصول على قصة كلاسيكية. وللحصول على مظهر واسع يناسب أسلوب الستريت وير، يمكنك اختيار مقاس أكبر بدرجة واحدة.\n\n**نصيحة:** يُرجى الاطلاع على دليل المقاسات قبل تأكيد الطلب لاختيار المقاس المناسب لك."
+    }
+  },
+  {
+    "id": "vyron-l-ensemble-l-essentiel",
+    "category": "packs",
+    "price": 5000,
+    "images": [
+      "assets/products/ensmpl-1.jpg",
+      "assets/products/ensmpl-2.jpg"
+    ],
+    "inStock": true,
+    "isNew": true,
+    "isLimited": true,
+    "name": {
+      "fr": "VYRON — L’Ensemble L’Essentiel",
+      "ar": "VYRON — مجموعة الأساسيات"
+    },
+    "description": {
+      "fr": "Découvrez L’Ensemble de VYRON, un ensemble streetwear composé d’un sweat à capuche avec fermeture zippée et d’un pantalon baggy assorti. Son design minimaliste, sa coupe ample et son logo V signature offrent un style moderne et affirmé.\n\nIdéal pour les sorties quotidiennes et les tenues décontractées, cet ensemble allie style urbain, simplicité et élégance.\n\n**Couleurs disponibles :** Gris et Noir.\n\n**Style :** Streetwear, coupe ample et design minimaliste.\n\n**Ensemble composé de :** 1 sweat à capuche zippé et 1 pantalon baggy.",
+      "ar": "اكتشف طقم L’Essentiel من VYRON، المصمم لعشاق أسلوب الستريت وير العصري. يتكون الطقم من سويت شيرت بغطاء رأس وسحّاب أمامي، بالإضافة إلى سروال واسع بتصميم متناسق.\n\nيتميز الطقم بقصّة واسعة وتصميم بسيط يحمل شعار V المميز للعلامة، ليمنحك إطلالة عصرية تجمع بين الأناقة والطابع الحضري.\n\n**الألوان المتوفرة:** الرمادي والأسود.\n\n**الأسلوب:** ستريت وير عصري بقصّة واسعة.\n\n**محتويات الطقم:** سويت شيرت بغطاء رأس وسحّاب أمامي + سروال واسع متناسق."
+    },
+    "isPack": true,
+    "pack": {
+      "pieces": [
+        "vyron-zip-up",
+        "baggy-jogger",
+        "vyron-collection-l-essentiel"
+      ],
+      "combos": [
+        {
+          "qty": 2,
+          "price": 5000
+        },
+        {
+          "qty": 3,
+          "price": 7000
+        }
+      ]
     }
   }
 ];
